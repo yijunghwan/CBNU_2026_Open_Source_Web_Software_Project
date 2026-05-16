@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+    <h1>회원가입 신청서</h1>
+    
+    <form id="registerForm">
+        <p>1. 사용할 아이디:</p>
+        <input type="text" name="user_id">
+        
+        <p>2. 비밀번호:</p>
+        <input type="password" name="password">
+        
+        <p>3. 학번 (예: 20261234):</p>
+        <input type="text" name="student_id">
+        
+        <p>4. 이름:</p>
+        <input type="text" name="name">
+        
+        <p>5. 나이:</p>
+        <input type="number" name="age">
+        
+        <p>6. 연락처 (예: 010-0000-0000):</p>
+        <input type="text" name="phone">
+        
+        <p>7. 학년 (1~4):</p>
+        <input type="number" name="grade">
+        
+        <p>8. 입학년도 (예: 2026):</p>
+        <input type="number" name="admission_year">
+        
+        <p>9. 거주지 주소:</p>
+        <input type="text" name="address">
+        
+        <p>10. 이메일:</p>
+        <input type="email" name="email">
+        
+        <br><br>
+        <button type="button" onclick="register()">가입하기</button>
+    </form>
+
+    <script>
+        function register() {
+            let form = document.getElementById('registerForm');
+            let formData = new FormData(form);
+
+            fetch('/auth/register', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if(data.success) {
+                        window.location.href = '/auth/login'; // 성공하면 로그인 화면으로 이동
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

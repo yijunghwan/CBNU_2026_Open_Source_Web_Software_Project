@@ -1,0 +1,44 @@
+여기는 db구조 같은거 저장하는 공간입니다
+
+#이하 db - 백엔드 연결 가이드
+
+#검색 하는법 
+#db이름.query.filter_by(컬럼명=값).first() -> 단일 객체 반환
+#db이름.query.filter_by(컬럼명=값).all() -> 리스트 반환
+#db이름.query.filter_by(컬럼명=값).count() -> 조건에 맞는 행의 갯수 반환
+
+#ex) A = User.query.filter_by(name='이정환').first() -> name가 '이정환'인 첫 번째 User 객체 반환
+#A.name -> '이정환' 이라고 나옴
+#A.user_id -> 2022041022 (이런식으로 학번도 나옴)
+
+
+#db에 행 추가하는법
+#db.session.add(객체) -> 객체를 DB 세션에 추가 (커밋 전까지는 실제 DB에 저장되지 않음)
+#db.session.commit() -> 세션에 추가된 객체들을 실제 DB에 저장 (디스크에 최종 물리 Write)
+
+#ex) new_user = User(user_id='2022041022', password='password123', student_id='2022041022', name='이정환', age=22, phone='010-1234-5678', grade=3, address='서울시 강남구', email ='a@naver.com)
+#위처럼 올바른 객체 추가후에
+#db.session.add(new_user) 
+#db.session.commit() 
+#이렇게하면 db에 한줄이 추가됨 (실제 DB에 저장됨)
+
+
+#로그인후 로그인 유저의 정보를 가져오는법
+#1.id  추출 -> session.get('id') -> 로그인된 유저의 id값 가져옴 (예: session.get('id') -> '2022041022')
+#2. DB에서 id로 유저 정보 검색 -> User.query.filter_by(user_id=session.get('id')).first() -> 이게 유저 객체임 여기서 뽑아쓰면됨
+
+
+
+
+#프론트엔드의 값 가져오는법
+#일단 methods=['POST']로 설정한 주소로 프론트엔드에서 데이터를 보내면
+#request.form.get('키값') -> 키값에 해당하는 데이터 가져옴 (예: request.form.get('A') -> user_id에 해당하는 데이터 가져옴)
+#프론트엔드에선 input 태그의 name 속성값이 키값이 됩니다. (예: <input type="text" name="A"> -> A가 키값이 됨)
+#즉 input안에 적은 데이터가 request.form.get('A')로 백엔드로 받아오는것임
+
+#백엔드에서 프론트엔드로 데이터 보내는법
+#return jsonify({"키값": 값}) -> 프론트엔드로 JSON 형태로 데이터 반환 (예: return jsonify({"success": True, "message": "회원가입이 완료되었습니다."}))
+#그럼 html의 자바스크립트에서 fetch('/auth/register', { method: 'POST', body: formData }) 이런식으로 요청보내면 .then(response => response.json()) -> .then(data => console.log(data)) 이런식으로 프론트엔드에서 JSON 데이터 받아올 수 있음
+#다른방법은
+#return render_template('템플릿.html', 키값=값) -> 템플릿 엔진을 사용하여 HTML 페이지 렌더링 (예: return render_template('register_success.html', user_name=name)) 
+

@@ -137,3 +137,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Python / Flask local files
+__pycache__/
+*.pyc
+venv/
+instance/
+
+# local configuration and secrets
+config.py

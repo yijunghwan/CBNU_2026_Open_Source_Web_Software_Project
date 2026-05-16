@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+    <h1>동아리 관리 시스템 로그인</h1>
+    
+    <form id="loginForm">
+        <p>아이디를 입력하세요:</p>
+        <input type="text" name="user_id" id="user_id">
+        
+        <p>비밀번호를 입력하세요:</p>
+        <input type="password" name="password" id="password">
+        
+        <br><br>
+        <button type="button" onclick="login()">로그인 버튼</button>
+    </form>
+
+    <script>
+        function login() {
+            let form = document.getElementById('loginForm');
+            let formData = new FormData(form);
+
+            fetch('/auth/login', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if(data.success) {
+                        window.location.href = '/mypage'; // 성공하면 마이페이지로 이동
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

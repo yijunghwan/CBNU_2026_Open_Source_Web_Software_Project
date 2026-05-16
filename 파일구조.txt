@@ -1,0 +1,21 @@
+│
+├── app.py              # [Entry Point] 서버를 최종 구동하고 모듈을 조립하는 최상위 파일
+├── config.py           # [Configuration] DB 주소, 포트, 암호화 키 등 시스템 환경설정 변수 관리
+│
+├── models/             # [Data Layer] C언어의 구조체 정의처럼 DB 테이블 스키마들을 모아둔 폴더
+│   ├── __init__.py     # 폴더를 파썬 패키지로 인식하게 만드는 초기화 파일
+│   └── user.py         # User 테이블 정의 (기존 class User 코드)
+│
+├── routes/             # [Control Layer] 비즈니스 로직 및 Blueprint 서브 라우터 모음
+│   ├── __init__.py
+│   ├── auth.py         # 회원가입 / 로그인 처리 라우터 (/register, /login)
+│
+├── templates/          # [Presentation Layer - HTML] 서버 사이드 렌더링용 템플릿 파일
+│   ├── index.html      # 메인 화면
+│   ├── login.html      # 로그인 화면
+│   └── register.html   # 회원가입 화면
+│
+└── static/             # [Presentation Layer - Assets] 브라우저가 다운로드하여 직접 실행하는 정적 파일
+    ├── css/            # 스타일시트 (디자인 변수 및 레이아웃 데이터)
+    ├── js/             # 클라이언트 사이드 스크립트 (이벤트 제어)
+    └── images/         # 로고 및 이미지 리소스
