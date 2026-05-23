@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>마이페이지 (비동아리원)</title></head>
+<body>
+    <h1>{{ user.name }}님의 마이페이지</h1>
+    <p>아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
+    <hr>
+    
+    <h2>동아리 소속 정보: 미등록</h2>
+    <p>현재 소속된 동아리가 없습니다.</p>
+    <button onclick="location.href='/club/apply'">동아리 가입 신청하기</button>
+
+    {% if application %}
+        <div style="border: 1px solid black; padding: 10px; margin-top: 10px;">
+            <p>⏳ 가입 심사 대기 중: {{ club_name }} (상태: {{ application.status }})</p>
+        </div>
+    {% endif %}
+
+    <hr>
+    <button onclick="location.href='/auth/logout'">로그아웃</button>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>마이페이지 (동아리원)</title></head>
+<body>
+    <h1>{{ user.name }}님의 마이페이지</h1>
+    <p>아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
+    <hr>
+    
+    <h2>동아리 소속 정보: {{ user.belonging_club }}</h2>
+    <p>우리 동아리 인원수: {{ count }}명</p>
+    
+    <form action="/club/leave" method="POST" onsubmit="return confirm('탈퇴하시겠습니까?');">
+        <button type="submit">동아리 탈퇴하기</button>
+    </form>
+
+    <hr>
+    <button onclick="location.href='/auth/logout'">로그아웃</button>
+</body>
+</html>

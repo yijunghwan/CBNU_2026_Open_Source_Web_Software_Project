@@ -1,34 +1,38 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-from models import User, ClubApplication, Club
+from models import User, ClubApplication, Club, db
 
 mypage_bp = Blueprint('mypage', __name__)
 
 @mypage_bp.route('/mypage')
 def my_page():
-    user_id = session.get('id')  # 로그인한 id 가져오기
-    
-    #로그인 안 되어 있으면 로그인 페이지로 튕겨버리기
+    user_id = session.get('id')
     if not user_id:
-        return redirect(url_for('auth.login')) # 로그인 안 했을때 예최처리
-
-    #DB에서 유저의 전체 정보 가져오기
-    user = User.query.filter_by(user_id=user_id).first()
-
-    if not user:
         return redirect(url_for('auth.login'))
-    
-    # 4. [추가 기능] 혹시 이 유저가 현재 동아리 가입 신청 중인지 확인하기
-    # (승인되면 삭제되기로 했으니, 여기 데이터가 있다면 '대기' 또는 '반려' 상태임)
-    application = ClubApplication.query.filter_by(user_id=user.id).first()
-    
-    # 신청 정보가 있다면 해당 동아리 이름도 가져오기
-    applying_club_name = None
-    if application:
-        club = Club.query.get(application.club_id)
-        applying_club_name = club.name
 
-    # 5. render_template을 통해 HTML 종이에 데이터를 비벼서 보내기
-    return render_template('my_page.html', 
-                           user=user, 
-                           application=application, 
-                           club_name=applying_club_name)
+    user = User.query.filter_by(user_id=user_id).first()
+    if not user:
+        session.clear()
+        return 1 #사용자의 정보르 못불러옴 비정상황
+
+    # [공통 데이터] 플레이스홀더 (내가 쓴 글/댓글)
+    posts = []
+    comments = []
+
+    # 권한별 분기 및 전용 HTML 렌더링
+    if user.role_level >= 30:
+        # [회장/관리자] 동아리 총원 집계 후 회장 전용 페이지 반사
+        member_count = User.query.filter_by(belonging_club=user.belonging_club).count()
+        return render_template('mypage_30.html', user=user, posts=posts, comments=comments, count=member_count)
+        
+    elif user.role_level >= 10:
+        # [간부/일반 부원] 동아리 총원 집계 후 부원 전용 페이지 반사
+        member_count = User.query.filter_by(belonging_club=user.belonging_club).count()
+        return render_template('mypage_10.html', user=user, posts=posts, comments=comments, count=member_count)
+        
+    else:
+        # [비동아리원] 가입 신청 상태 확인 후 비동아리원 전용 페이지 반사
+        application = ClubApplication.query.filter_by(user_id=user.id).first()
+        applying_club_name = Club.query.get(application.club_id).name if application else None
+        
+        return render_template('mypage_0.html', user=user, posts=posts, comments=comments, 
+                               application=application, club_name=applying_club_name)
