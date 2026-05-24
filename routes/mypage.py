@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, render_template, session, redirect, url_for
+from flask import Blueprint, jsonify, render_template, session, redirect, url_for, request
 from models import User, ClubApplication, Club, db
 
 mypage_bp = Blueprint('mypage', __name__, url_prefix='/user')
+
 
 @mypage_bp.route('/mypage')
 def my_page():
@@ -34,6 +35,45 @@ def my_page():
         return render_template('mypage_0.html', user=user, posts=posts, comments=comments, 
                                application=application, club_name=applying_club_name)
 
+
+
+# 비동아리원(0) 전용 동아리 가입 신청
+@mypage_bp.route('/apply_0', methods=['GET', 'POST'])
+def apply_club_0():
+    user_id = session.get('id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(user_id=user_id).first()
+
+    if user.role_level >= 10 or user.belonging_club != 'N':
+        return "이미 동아리에 소속되어 있어 가입 신청을 할 수 없습니다.", 403
+
+    existing_app = ClubApplication.query.filter_by(user_pk=user.id).first()
+    if existing_app:
+        return "이미 가입 심사 대기 중인 동아리가 있습니다. 결과를 기다려주세요.", 400
+
+    if request.method == 'GET':
+        clubs = Club.query.all()
+        return render_template('apply.html', user=user, clubs=clubs)
+
+    club_id = request.form.get('club_id')
+    memo = request.form.get('memo')
+
+    new_app = ClubApplication(
+        user_pk=user.id,
+        club_id=int(club_id),
+        status='PENDING',
+        memo=memo
+    )
+
+    try:
+        db.session.add(new_app)
+        db.session.commit()
+        return jsonify({"success": True, "message": "성공적으로 가입 신청이 접수되었습니다!"}), 201
+    except Exception:
+        db.session.rollback()
+        return jsonify({"success": False, "message": "서버 오류로 신청에 실패했습니다."}), 500
 
 
 # 비동아리원전용 가입 신청 취소

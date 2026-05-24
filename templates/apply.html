@@ -34,7 +34,7 @@
             let formData = new FormData(form);
 
             // POST 방식으로 데이터 전송
-            fetch('/club/apply', { method: 'POST', body: formData })
+            fetch('/user/apply_0', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
                     alert(data.message);
