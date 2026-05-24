@@ -5,7 +5,7 @@ class ClubApplication(db.Model):
     
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)#id
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)#user_id
+    user_pk = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)#club_id
     status = db.Column(db.String(20), default='PENDING', nullable=False)#현재 상태 (PENDING, REJECTED)-> 이렇게 두개만둘듯? 대기중 / 거절 (통과는 바로 users 건들이고 삭제되는방식으로)
     
@@ -21,7 +21,7 @@ class ClubApplication(db.Model):
         return (
             f"<ClubApplication(\n"
             f"  id={self.id},\n"
-            f"  user={self.user_id},\n"
+            f"  user={self.user_pk},\n"
             f"  club={self.club_id},\n"
             f"  status='{self.status}',\n"
             f"  memo='{self.memo}'\n"

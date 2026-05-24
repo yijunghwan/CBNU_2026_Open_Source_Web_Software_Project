@@ -3,7 +3,7 @@
 <head><meta charset="UTF-8"><title>마이페이지 (회장)</title></head>
 <body>
     <h1>{{ user.name }} 회장님의 마이페이지</h1>
-    <p>아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
+    <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
     <hr>
     
     <h2>동아리 소속 정보: {{ user.belonging_club }}</h2>
