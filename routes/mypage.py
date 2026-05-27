@@ -50,7 +50,7 @@ def apply_club_0():
         return "이미 동아리에 소속되어 있어 가입 신청을 할 수 없습니다.", 403
 
     existing_app = ClubApplication.query.filter_by(user_pk=user.id).first()
-    if existing_app:
+    if existing_app.status == 'PENDING':
         return "이미 가입 심사 대기 중인 동아리가 있습니다. 결과를 기다려주세요.", 400
 
     if request.method == 'GET':
@@ -134,3 +134,61 @@ def leave_club_10():
     except Exception as e:
         db.session.rollback()
         return jsonify({"success": False, "message": "서버 오류로 탈퇴 처리에 실패했습니다."}), 500
+    
+
+
+@mypage_bp.route('/change_info', methods=['GET', 'POST'])
+def change_info():
+    user_id = session.get('id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(user_id=user_id).first()
+    if not user:
+        session.clear()
+        return redirect(url_for('auth.login'))
+
+    is_verified = session.get('change_info_verified', False)
+
+    #일단 get요청수행
+    if request.method == 'GET':
+        return render_template('change_info.html', user=user, verified=is_verified)
+
+    # 정보 수정 진입 전 비밀번호 재확인
+    if not is_verified:
+        password = request.form.get('password', '')
+        if user.password != password:
+            return jsonify({"success": False, "message": "비밀번호가 일치하지 않습니다."}), 401
+
+        session['change_info_verified'] = True
+        return jsonify({"success": True, "message": "비밀번호 확인 완료", "redirect": url_for('mypage.change_info')}), 200
+
+    #정보 변경 프론트엔드에서 받아오기 strip으로 공백제거
+    name = request.form.get('name', '').strip()
+    age_raw = request.form.get('age', '').strip()
+    phone = request.form.get('phone', '').strip()
+    grade_raw = request.form.get('grade', '').strip()
+    admission_year_raw = request.form.get('admission_year', '').strip()
+    address = request.form.get('address', '').strip()
+    email = request.form.get('email', '').strip()
+    off_raw = request.form.get('off', '0').strip()
+
+    if not (age_raw.isdigit() and grade_raw.isdigit() and admission_year_raw.isdigit() and off_raw in ('0', '1')):
+        return jsonify({"success": False, "message": "나이/학년/입학년도/휴학여부 값이 올바르지 않습니다."}), 400
+
+    try:
+        user.name = name
+        user.age = int(age_raw)
+        user.phone = phone
+        user.grade = int(grade_raw)
+        user.admission_year = int(admission_year_raw)
+        user.address = address
+        user.email = email
+        user.off = int(off_raw)
+        
+        db.session.commit()
+        session.pop('change_info_verified', None)
+        return jsonify({"success": True, "message": "정보가 성공적으로 업데이트되었습니다!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "message": "서버 오류로 정보 업데이트에 실패했습니다."}), 500

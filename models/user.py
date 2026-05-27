@@ -20,13 +20,16 @@ class User(db.Model):
     student_id = db.Column(db.String(20), unique=True, nullable=False)  
     name = db.Column(db.String(50), nullable=False)                     
     age = db.Column(db.Integer, default=0, nullable=False)              
-    phone = db.Column(db.String(20), nullable=False)                    
+    phone = db.Column(db.String(20), default='N', nullable=False)    
     grade = db.Column(db.Integer, nullable=False)                      
-    admission_year = db.Column(db.Integer, nullable=False)             
+    admission_year = db.Column(db.Integer, default=0, nullable=False)             
     address = db.Column(db.String(255), default='N', nullable=False)                
-    email = db.Column(db.String(255), nullable=False)                  
-    belonging_club = db.Column(db.String(50), default='N', nullable=False)            
+    email = db.Column(db.String(255), default='N', nullable=False)                  
+    belonging_club = db.Column(db.String(50), default='N', nullable=False)
+    off = db.Column(db.Integer, default=0, nullable=False) #휴학시 1
     
+    
+
     # 0: 비동아리원(GUEST) / 10: 동아리원 / 20: 간부 / 30: 회장 / 40: 조교 및 개발자(ADMIN)
     role_level = db.Column(db.Integer, default=0, nullable=False)
 

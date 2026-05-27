@@ -10,7 +10,8 @@ class ClubApplication(db.Model):
     status = db.Column(db.String(20), default='PENDING', nullable=False)#현재 상태 (PENDING, REJECTED)-> 이렇게 두개만둘듯? 대기중 / 거절 (통과는 바로 users 건들이고 삭제되는방식으로)
     
 
-    memo = db.Column(db.String(255), default='심사중입니다', nullable=False)#아마 필요상 추가한것(반려 사유 적으면 좋을듯)
+    memo = db.Column(db.String(255), default='.', nullable=False)#신청시 작성하는 메모 
+    memo2 = db.Column(db.String(255), default='심사중입니다', nullable=False) #반려 사유시 메모
 
     @classmethod
     def find_pendings_by_club(cls, target_club_id):

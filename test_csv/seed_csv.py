@@ -55,6 +55,7 @@ def seed_from_csv():
                     address=row['address'],
                     email=row['email'],
                     belonging_club=row['belonging_club'],
+                    off=int(row.get('off', 0) or 0),
                     role_level=int(row['role_level'])
                 )
                 db.session.add(user)
