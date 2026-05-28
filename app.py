@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 from models import db
 
@@ -14,6 +14,10 @@ from routes.mypage import mypage_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(mypage_bp)
+
+@app.route('/')
+def main():
+    return render_template('test.html')
 
 if __name__ == '__main__':
     with app.app_context():

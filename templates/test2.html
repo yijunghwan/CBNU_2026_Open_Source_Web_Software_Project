@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동아리 통합 게시판 - 홀로그램 에디션</title>
+    <style>
+        /* 
+         * [1. 기본 설정 및 커스텀 커서] 
+         * 웹 브라우저의 기본 마우스를 숨기고 우리가 만든 예쁜 네온 커서를 쓰기 위한 설정입니다.
+         */
+        * {
+            cursor: none; /* 화면 전체에서 기본 마우스 포인터를 숨깁니다. */
+            box-sizing: border-box; /* 요소의 크기를 계산할 때 테두리와 안쪽 여백을 포함하여 계산이 빗나가지 않게 합니다. */
+        }
+        body {
+            margin: 0;
+            background-color: #050505; /* 아주 어두운 회색으로 우주 같은 배경을 만듭니다. */
+            font-family: 'Pretendard', sans-serif;
+            color: #eee;
+            overflow-x: hidden; /* 가로로 스크롤이 생겨서 화면이 흔들리는 것을 방지합니다. */
+            scroll-behavior: smooth; /* 링크를 클릭해 스크롤될 때 부드럽게 이동하게 합니다. */
+        }
+
+        /* 
+         * [2. 커스텀 네온 커서 스타일] 
+         * 마우스를 따라다니는 '작은 점(dot)'과 '큰 테두리(outline)'의 디자인입니다.
+         */
+        .cursor-dot {
+            position: fixed; /* 스크롤을 내려도 항상 화면의 같은 위치에 있게 합니다. */
+            top: 0; left: 0;
+            width: 8px; height: 8px;
+            background-color: #00d4ff; /* 네온 블루 색상 */
+            border-radius: 50%; /* 완전한 원으로 만듭니다. */
+            pointer-events: none; /* ★매우 중요: 이 커서가 클릭을 방해하지 않도록 마우스 이벤트를 무시하게 합니다. */
+            z-index: 9999; /* 화면의 제일 앞쪽에 보이게 합니다. */
+            transform: translate(-50%, -50%); /* 커서의 중심점이 마우스 좌표와 정확히 일치하도록 위치를 조정합니다. */
+            box-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; /* 빛나는 글로우 효과 */
+        }
+        .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            width: 40px; height: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.5); /* 반투명한 테두리 */
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s; /* 크기나 색이 변할 때 부드럽게 바뀌도록 애니메이션을 줍니다. */
+        }
+
+        /* 
+         * [3. 네비게이션 바 - 글래스모피즘(유리 질감)] 
+         * 뒤에 있는 3D 배경이 반투명한 유리를 통해 비쳐 보이게 만드는 최신 트렌드 디자인입니다.
+         */
+        nav {
+            position: fixed;
+            top: 0; width: 100%; height: 75px;
+            background: rgba(10, 10, 10, 0.4); /* 검은색 배경을 40% 투명도로 설정 */
+            backdrop-filter: blur(12px); /* ★글래스모피즘의 핵심: 요소의 '뒤쪽' 배경을 12px만큼 흐리게(블러) 만듭니다. */
+            -webkit-backdrop-filter: blur(12px); /* 사파리 브라우저 호환성을 위한 코드 */
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* 유리 밑부분에 살짝 빛이 맺힌 듯한 선을 줍니다. */
+        }
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #00d4ff, #ff00c8); /* 파랑에서 분홍으로 변하는 그라데이션 색상 */
+            -webkit-background-clip: text; /* ★텍스트 컬러 대신, 그라데이션 배경을 글자 모양대로 잘라서 보여줍니다. */
+            color: transparent; /* 원래 글자 색을 투명하게 만들어야 뒤의 그라데이션이 보입니다. */
+        }
+        nav .menu { display: flex; gap: 40px; }
+        nav .menu a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative; /* 자식 요소(밑줄)의 위치 기준점이 됩니다. */
+        }
+        nav .menu a:hover { color: #fff; }
+        nav .menu a::after {
+            content: ''; /* 가상의 밑줄 요소를 만듭니다. */
+            position: absolute; left: 0; bottom: -5px;
+            width: 0; height: 2px; /* 처음에는 너비가 0이라 안 보입니다. */
+            background: #00d4ff;
+            transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* 마우스를 올릴 때 너비가 늘어나는 속도를 쫀득하게 조절합니다. */
+        }
+        nav .menu a:hover::after { width: 100%; box-shadow: 0 0 8px #00d4ff; } /* 마우스를 올리면 밑줄이 100%로 길어집니다. */
+
+        /* 
+         * [4. 히어로 섹션 & 타이틀] 
+         * 화면 최상단에 보여지는 3D 캔버스와 움직이는 텍스트 영역입니다.
+         */
+        #hero-section {
+            position: relative;
+            width: 100vw; height: 100vh; /* 화면의 가로 세로를 꽉 채웁니다. */
+            overflow: hidden; /* 밖으로 삐져나가는 3D 요소들을 숨깁니다. */
+        }
+        #ui-container {
+            position: absolute;
+            top: 18vh; left: 50%;
+            transform: translateX(-50%); /* 정확히 가운데 정렬을 하기 위한 공식 같은 코드입니다. */
+            text-align: center;
+            z-index: 10;
+            pointer-events: none; /* 글씨 위에서 마우스 드래그를 해도 3D 화면이 돌아가도록 클릭을 통과시킵니다. */
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            /* 배경을 일반 크기의 2배(200%)로 만들고 애니메이션으로 움직여서 빛이 흐르는 것처럼 연출합니다. */
+            background: linear-gradient(270deg, #00d4ff, #ff00c8, #00d4ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradientFlow 5s ease infinite; /* 5초 동안 무한 반복되는 애니메이션 */
+            filter: drop-shadow(0 0 15px rgba(255, 0, 200, 0.3)); /* 텍스트 주변에 은은한 빛(그림자)을 깔아줍니다. */
+        }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+        #canvas-container {
+            width: 100%; height: 100%;
+        }
+
+        /* 
+         * [5. 하단 게시판 영역 & 3D 틸트 효과] 
+         */
+        #board-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 화면을 정확히 반(1:1)으로 나눕니다. */
+            gap: 60px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .board {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            
+            /* ★틸트 효과를 위한 CSS의 핵심 */
+            transform-style: preserve-3d; /* 자식 요소들이 평면이 아닌 3D 공간에 존재하도록 허용합니다. */
+            transform: perspective(1000px); /* 원근감을 줍니다. 값이 작을수록 왜곡이 심해집니다. */
+            transition: border-color 0.4s, transform 0.1s; /* 마우스가 움직일 때 0.1초만에 빠릿빠릿하게 따라오게 합니다. */
+        }
+        
+        .board:hover {
+            border-color: rgba(0, 212, 255, 0.4); /* 마우스를 올리면 테두리가 파랗게 빛납니다. */
+        }
+
+        .board-content {
+            /* 부모 요소(.board)가 기울어질 때, 이 알맹이(content)는 Z축(화면 앞으로) 30px 튀어나오게 해서 엄청난 입체감을 만듭니다. */
+            transform: translateZ(30px); 
+        }
+
+        /* 리스트 스타일링 (생략 - 기존 스타일과 동일하므로 디자인적 요소임) */
+        .board h2 {
+            margin-top: 0; margin-bottom: 30px;
+            font-size: 2rem; font-weight: 800; color: #fff;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .board h2::before {
+            content: ''; display: block; width: 12px; height: 12px;
+            border-radius: 50%; background: #00d4ff; box-shadow: 0 0 10px #00d4ff;
+        }
+        .board:nth-child(2) h2::before { background: #ff00c8; box-shadow: 0 0 10px #ff00c8; }
+        .board-list { list-style: none; padding: 0; margin: 0; }
+        .board-list li {
+            padding: 22px 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            color: #aaa; transition: all 0.3s ease; border-radius: 8px;
+        }
+        .board-list li:last-child { border-bottom: none; }
+        .board-list li:hover {
+            color: #fff; background: rgba(255, 255, 255, 0.05);
+            transform: translateX(10px); /* 호버 시 우측으로 살짝 밀려나는 애니메이션 */
+            box-shadow: -4px 0 0 #00d4ff;
+        }
+        .board:nth-child(2) .board-list li:hover { box-shadow: -4px 0 0 #ff00c8; }
+        .board-list .date { color: #666; font-size: 0.9rem; font-weight: 400; }
+
+        /* 모바일 등 작은 화면일 때의 대응 */
+        @media (max-width: 1024px) {
+            h1 { font-size: 3rem; }
+            #board-section { grid-template-columns: 1fr; gap: 40px; } /* 2칸을 1칸으로 변경하여 위아래로 쌓음 */
+            * { cursor: auto; } /* 모바일은 터치이므로 커스텀 커서를 끄고 기본 커서로 돌립니다. */
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 커스텀 커서 요소 -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav>
+        <div class="logo">CLUB BOARD</div>
+        <div class="menu">
+            <a href="#">홈</a>
+            <a href="#board-section">게시판</a>
+            <a href="#board-section">홍보</a>
+        </div>
+    </nav>
+
+    <div id="hero-section">
+        <div id="ui-container">
+            <h1>동아리 통합 게시판</h1>
+            <p>드래그하여 공간을 탐색하세요</p>
+        </div>
+        <!-- 여기에 JavaScript가 3D 캔버스를 주입합니다. -->
+        <div id="canvas-container"></div>
+    </div>
+
+    <div id="board-section">
+        <!-- 공용게시판 -->
+        <div class="board">
+            <div class="board-content">
+                <h2>공용게시판</h2>
+                <ul class="board-list">
+                    <li><span>[공지] 이번 주 동아리 연합 회의 일정</span> <span class="date">10.24</span></li>
+                    <li><span>동아리방 대관 신청 관련 안내</span> <span class="date">10.23</span></li>
+                    <li><span>분실물 보관소 운영 시간 변경</span> <span class="date">10.21</span></li>
+                    <li><span>자유게시판 이용 수칙 안내</span> <span class="date">10.20</span></li>
+                    <li><span>동아리 지원금 정산서류 양식</span> <span class="date">10.19</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 홍보게시판 -->
+        <div class="board">
+            <div class="board-content">
+                <h2>홍보게시판</h2>
+                <ul class="board-list">
+                    <li><span>[밴드동아리] 2학기 신입 기수 모집!</span> <span class="date">10.24</span></li>
+                    <li><span>코딩 동아리에서 해커톤 팀원 구합니다</span> <span class="date">10.23</span></li>
+                    <li><span>사진동아리 정기 전시회 개최 안내</span> <span class="date">10.22</span></li>
+                    <li><span>영화 감상 동아리 주말 상영작 안내</span> <span class="date">10.20</span></li>
+                    <li><span>댄스동아리 버스킹 공연 (학생회관 앞)</span> <span class="date">10.18</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D 구현을 위해 외부 라이브러리인 Three.js를 불러옵니다. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        /* =========================================
+           [JavaScript 파트 1] 커스텀 커서 로직
+           마우스가 움직일 때마다 HTML 요소(.cursor-dot, .cursor-outline)의 좌표를 바꿔줍니다.
+        ========================================= */
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX; // 현재 마우스의 X(가로) 좌표
+            const posY = e.clientY; // 현재 마우스의 Y(세로) 좌표
+            
+            // 작은 점은 마우스를 지연 없이 즉각적으로 따라갑니다.
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // 바깥 테두리는 브라우저의 기본 기능인 animate를 써서 0.5초 동안 서서히 마우스 위치로 이동하게 합니다. (유체 같은 느낌을 줌)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        /* =========================================
+           [JavaScript 파트 2] 게시판 3D 틸트 (기울기) 로직
+           마우스 위치에 따라 CSS의 rotateX, rotateY 값을 실시간으로 계산해서 카드를 기울입니다.
+        ========================================= */
+        const boards = document.querySelectorAll('.board');
+        
+        boards.forEach(board => {
+            board.addEventListener('mousemove', (e) => {
+                const rect = board.getBoundingClientRect(); // 화면에서 카드가 위치한 구역의 정보를 가져옵니다.
+                const x = e.clientX - rect.left; // 카드 가장 왼쪽 0부터 마우스까지의 X거리
+                const y = e.clientY - rect.top;  // 카드 가장 위쪽 0부터 마우스까지의 Y거리
+                
+                const centerX = rect.width / 2;  // 카드의 정확한 가로 중앙점
+                const centerY = rect.height / 2; // 카드의 정확한 세로 중앙점
+                
+                // 마우스가 중앙에서 얼마나 떨어져 있는지 비율을 구하고, 최대 10도까지만 기울어지도록 곱해줍니다.
+                // Y축(세로)으로 마우스가 움직이면 카드는 X축(가로선)을 기준으로 회전해야 하므로 rotateX에 y값을 넣습니다.
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                // 계산된 각도를 CSS transform에 적용하고, 카드 크기를 2% 정도 키웁니다(scale3d 1.02).
+                board.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            // 마우스가 카드 밖으로 나가면 모든 회전을 0도로 되돌려 평평하게 만듭니다.
+            board.addEventListener('mouseleave', () => {
+                board.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                board.style.transition = 'transform 0.5s ease'; // 되돌아갈 때는 0.5초 동안 천천히.
+            });
+            
+            // 마우스가 처음 들어올 때는 즉각적으로(0.1초) 반응하도록 딜레이를 없앱니다.
+            board.addEventListener('mouseenter', () => {
+                board.style.transition = 'transform 0.1s ease';
+            });
+        });
+
+        /* =========================================
+           [JavaScript 파트 3] Three.js 3D 환경 (캐러셀 + 파티클)
+           Three.js는 기본적으로 무대(Scene), 카메라(Camera), 영사기(Renderer) 3개가 필요합니다.
+        ========================================= */
+        const scene = new THREE.Scene(); // 무대를 만듭니다.
+        // 안개 효과(FogExp2)를 추가해 멀리 있는 물체가 배경색(#050505)과 자연스럽게 섞이게 만듭니다. (깊이감 증가)
+        scene.fog = new THREE.FogExp2(0x050505, 0.04);
+
+        const container = document.getElementById('canvas-container');
+        // 카메라를 설치합니다. (시야각 75도, 화면비율, 0.1부터 1000거리까지 렌더링)
+        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 18; // 카메라를 뒤로 18칸 물려서 무대를 넓게 봅니다.
+        camera.position.y = 2;  // 카메라를 살짝 위로 올립니다.
+
+        // 화면을 그려줄 렌더러입니다. antialias: true는 테두리의 계단 현상을 부드럽게 깎아줍니다.
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio); // 고해상도(레티나 등) 모니터에서도 선명하게 보이게 합니다.
+        container.appendChild(renderer.domElement); // 완성된 캔버스를 HTML에 집어넣습니다.
+
+        /* --- [파티클(별가루) 배경 추가] --- */
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000; // 별가루 1000개
+        const posArray = new Float32Array(particlesCount * 3); // x, y, z 좌표를 담아야 하므로 3배수 배열 생성
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            // -30 ~ +30 공간 안에 무작위(Math.random)로 점들을 뿌려줍니다.
+            posArray[i] = (Math.random() - 0.5) * 60;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.08, color: 0x00d4ff, transparent: true, opacity: 0.8,
+            // AdditiveBlending: 겹쳐질수록 빛이 더해져서 더 밝게 빛나는(홀로그램스러운) 효과를 만듭니다.
+            blending: THREE.AdditiveBlending 
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh); // 무대에 파티클을 올립니다.
+
+        /* --- [홀로그램 배너 캐러셀] --- */
+        const carouselGroup = new THREE.Group(); // 배너들을 하나로 묶을 그룹
+        scene.add(carouselGroup);
+
+        const bannerCount = 10;
+        const radius = 13; // 원의 반지름 (카메라에서 얼마나 떨어질지 결정)
+
+        for (let i = 0; i < bannerCount; i++) {
+            // 원을 360도(Math.PI * 2)로 10등분하여 각 배너의 각도를 정합니다.
+            const angle = (i / bannerCount) * Math.PI * 2;
+            const geometry = new THREE.BoxGeometry(4.5, 7, 0.1); 
+            
+            // 배너의 색상. HSL(색상, 채도, 명도)을 써서 i값에 따라 무지개색처럼 변하게 합니다.
+            const material = new THREE.MeshBasicMaterial({ 
+                color: new THREE.Color().setHSL(i / bannerCount, 1, 0.2),
+                transparent: true, opacity: 0.7
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+
+            // 배너의 네온 테두리를 만들기 위해 도형의 '모서리 선(Edges)'만 추출합니다.
+            const edges = new THREE.EdgesGeometry(geometry);
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: new THREE.Color().setHSL(i / bannerCount, 1, 0.6), // 속살보다 더 밝은 명도(0.6) 부여
+                linewidth: 2
+            });
+            const line = new THREE.LineSegments(edges, lineMaterial);
+            mesh.add(line); // 테두리를 배너 위에 덮어씌웁니다.
+
+            // 삼각함수(cos, sin)를 이용해서 배너들을 원형(반지름 13)으로 둥글게 배치합니다.
+            mesh.position.x = Math.cos(angle) * radius;
+            mesh.position.z = Math.sin(angle) * radius;
+            
+            // 모든 배너가 일직선상에 있지 않고, 위아래로 물결치듯 배치되게 합니다.
+            mesh.position.y = Math.sin(angle * 3) * 1.5; 
+            
+            // 각각의 배너가 항상 중앙(카메라 쪽)을 쳐다보도록 각도를 틀어줍니다.
+            mesh.rotation.y = -angle + Math.PI / 2;
+
+            carouselGroup.add(mesh); // 그룹에 조립된 배너를 추가합니다.
+        }
+
+        /* --- [마우스 드래그 상호작용] --- */
+        let isDragging = false;
+        let previousMouseX = 0; let previousMouseY = 0;
+        let targetRotationY = 0; // 목표 좌우 회전값
+        let targetRotationX = 0; // 목표 상하 기울기값
+        const autoRotateSpeed = 0.002; // 가만히 둬도 자동으로 돌아가는 속도
+
+        const onPointerDown = (e) => {
+            isDragging = true;
+            // 터치(모바일)와 마우스(PC) 모두 호환되도록 좌표를 가져옵니다.
+            previousMouseX = e.clientX || e.touches[0].clientX;
+            previousMouseY = e.clientY || e.touches[0].clientY;
+            
+            // 클릭해서 드래그 중일 땐 커스텀 커서 테두리가 1.5배 커지며 파랗게 변하게 합니다.
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            cursorOutline.style.backgroundColor = 'rgba(0, 212, 255, 0.2)';
+        };
+        const onPointerMove = (e) => {
+            if (!isDragging) return; // 드래그 중이 아니면 멈춥니다.
+            const currentX = e.clientX || e.touches[0].clientX;
+            const currentY = e.clientY || e.touches[0].clientY;
+            
+            // 방금 전 마우스 위치와 현재 위치의 차이(이동 거리)를 계산합니다.
+            const deltaX = currentX - previousMouseX;
+            const deltaY = currentY - previousMouseY;
+            
+            targetRotationY += deltaX * 0.005; // 마우스를 좌우로 민 만큼 목표 회전값 증가
+            targetRotationX += deltaY * 0.002;
+            
+            // 상하로 3D 공간 전체가 너무 뒤집어지면 어색하므로 최대 각도(-0.2 ~ 0.2)를 제한합니다.
+            targetRotationX = Math.max(-0.2, Math.min(0.2, targetRotationX));
+            
+            previousMouseX = currentX;
+            previousMouseY = currentY;
+        };
+        const onPointerUp = () => {
+            isDragging = false;
+            targetRotationX = 0; // 드래그를 놓으면 위아래 기울어진 화면이 다시 제자리로 돌아옵니다.
+            
+            cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursorOutline.style.backgroundColor = 'transparent';
+        };
+
+        // 캔버스 위에 이벤트 리스너(마우스와 터치 감지기)를 달아줍니다.
+        container.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        container.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('touchend', onPointerUp);
+
+        // 사용자가 브라우저 창 크기를 줄이거나 늘리면, 카메라 비율과 화면 캔버스 크기를 다시 세팅해 찌그러지지 않게 합니다.
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        /* --- [메인 애니메이션 루프] --- */
+        const clock = new THREE.Clock(); // 시간 측정기 (흘러간 시간을 구함)
+
+        function animate() {
+            // 1초에 60번(60프레임)씩 이 함수를 스스로 계속 호출해서 끊김 없는 애니메이션을 만듭니다.
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime(); // 사이트가 켜진 후 몇 초가 지났는지 잽니다.
+
+            if (!isDragging) {
+                targetRotationY += autoRotateSpeed; // 드래그 중이 아니면 천천히 자동 회전합니다.
+            }
+            
+            // ★Lerp(선형 보간): 현재 각도에서 목표 각도(targetRotation)로 한번에 빡! 움직이지 않고 10%(0.1)씩 부드럽게 다가가서 관성이 있는 것처럼 연출합니다.
+            carouselGroup.rotation.y += (targetRotationY - carouselGroup.rotation.y) * 0.1;
+            carouselGroup.rotation.x += (targetRotationX - carouselGroup.rotation.x) * 0.1;
+
+            // 파티클 뭉치가 전체적으로 서서히 돌아가면서 위아래로 천천히 떠다니도록 만듭니다 (우주 공간 느낌).
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+            particlesMesh.position.y = Math.sin(elapsedTime * 0.5) * 2;
+
+            // 각각의 배너들도 시간(elapsedTime)에 따라 Math.sin 파동 곡선을 타며 둥둥 떠다니는 애니메이션을 적용합니다.
+            carouselGroup.children.forEach((banner, idx) => {
+                banner.position.y = Math.sin(elapsedTime * 2 + idx) * 0.5;
+            });
+
+            // 최종적으로 변동된 카메라와 무대의 상황을 화면(캔버스)에 찍어냅니다.
+            renderer.render(scene, camera);
+        }
+        animate(); // 무한 반복 함수 최초 실행!
+    </script>
+</body>
+</html>
