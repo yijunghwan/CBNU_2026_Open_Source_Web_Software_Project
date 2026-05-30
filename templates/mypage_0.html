@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>마이페이지 (비동아리원)</title></head>
+<body>
+    <h1>{{ user.name }}님의 마이페이지</h1>
+    <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
+    <hr>
+    
+    <h2>동아리 소속 정보: 미등록</h2>
+
+    {% if application %}
+        <div style="border: 1px solid black; padding: 15px; margin-top: 10px; background-color: #f9f9f9;">
+            <h3>가입 심사 대기 중</h3>
+            <p>신청 동아리: {{ club_name }}</p>
+            <p>현재 상태: {{ application.status }}</p>
+            <p>나의 코멘트: {{ application.memo }}</p>
+            
+            <br>
+            <button onclick="cancelApplication()" style="color: red;">가입 신청 취소하기</button>
+        </div>
+    
+    {% else %}
+        <p>현재 소속된 동아리가 없습니다.</p>
+        <button onclick="location.href='/user/apply_0'">동아리 가입 신청하기</button>
+    {% endif %}
+
+    <hr>
+    <button onclick="location.href='/user/cnange_info'">내 정보 수정</button>
+    <button onclick="location.href='/auth/logout'">로그아웃</button>
+
+    <script>
+        function cancelApplication() {
+            // 진짜 취소할 건지 한 번 더 물어보는 안전장치
+            if(confirm("정말 가입 신청을 취소하시겠습니까?")) {
+                
+                // 백엔드의 /cancel_apply 주소로 POST 패킷 전송
+                fetch('/user/cancel_apply_0', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message); // "정상적으로 취소되었습니다." 알림
+                    if(data.success) {
+                        window.location.reload(); // 성공하면 화면 새로고침해서 버튼 바꾸기!
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

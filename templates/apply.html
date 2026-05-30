@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>동아리 가입 신청</title>
+</head>
+<body>
+    <h1>동아리 가입 신청서</h1>
+    <p>환영합니다, <strong>{{ user.name }}</strong>님! 지원하실 동아리를 선택하고 각오를 남겨주세요.</p>
+    
+    <hr>
+
+    <form id="applyForm">
+        <p>1. 지원할 동아리를 선택하세요:</p>
+        <select name="club_id" id="club_id">
+            {% for club in clubs %}
+                <option value="{{ club.id }}">{{ club.name }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <p>2. 회장님께 남길 코멘트 (가입 동기, 각오 등):</p>
+        <input type="text" name="memo" id="memo" style="width: 400px;" placeholder="예: 열심히 코딩하겠습니다!">
+
+        <br><br>
+
+        <button type="button" onclick="submitApplication()">가입 신청서 제출하기</button>
+    </form>
+
+    <script>
+        function submitApplication() {
+            let form = document.getElementById('applyForm');
+            let formData = new FormData(form);
+
+            // POST 방식으로 데이터 전송
+            fetch('/user/apply_0', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if(data.success) {
+                        window.location.href = '/user/mypage'; // 성공하면 다시 마이페이지로 이동
+                    }
+                });
+        }
+    </script>
+    
+    <br>
+    <button onclick="location.href='/user/mypage'">돌아가기</button>
+</body>
+</html>
