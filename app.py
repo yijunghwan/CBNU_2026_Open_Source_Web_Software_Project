@@ -19,7 +19,7 @@ app.register_blueprint(club_bp)
 
 @app.route('/')
 def main():
-    return render_template('test.html')
+    return render_template('main.html')
 
 if __name__ == '__main__':
     with app.app_context():
