@@ -1,0 +1,153 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #050816;
+    padding: 20px 200px;
+}
+
+h2 {
+    color: #FFFFFF;
+}
+
+.write_page {
+    background-color: #0D1323;
+    border: 1px solid #1E293B;
+    border-radius: 12px;
+    padding: 40px 60px;
+    width: 100%;
+}
+
+.select {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.select p {
+    color: #FFFFFF;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.select select {
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #FFFFFF;
+    padding: 12px;
+    resize: none;
+    outline: none;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.title p {
+    color: #FFFFFF;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.title input {
+    width: 100%;
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #FFFFFF;
+    padding: 12px;
+    resize: none;
+    outline: none;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.content p {
+    color: #FFFFFF;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.content textarea {
+    width: 100%;
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #FFFFFF;
+    padding: 12px;
+    resize: none;
+    outline: none;
+    height: 600px;
+}
+
+.hr {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 20px 0;
+}
+
+.edit {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0 15px;
+}
+
+.font {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.style {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.line {
+    width: 1px;
+    height: 28px;
+    background-color: #334155;
+}
+
+.result {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.create-button {
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 35px;
+    color: #FFFFFF;
+    background-color: #2563EB;
+}
+
+.cancel-button {
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 35px;
+    color: #E5E7EB;
+    background-color: #334155;
+}

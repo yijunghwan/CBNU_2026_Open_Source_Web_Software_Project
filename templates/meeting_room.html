@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>회의실</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='meeting_room.css') }}" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-text">
+        <h1>회의실</h1>
+        <p>회의를 생성하고 참여할 수 있는 공간입니다.</p>
+      </div>
+      <button class="button" onclick="OpenCreatePage()">✎ 회의실 생성</button>
+    </div>
+
+    <div class="filter">
+      <button>전체</button>
+      <button>진행중</button>
+      <button>종료됨</button>
+      <button>중요 회의</button>
+    </div>
+    <hr class="filter-hr" />
+
+    <div class="meeting-list"></div>
+
+    <div class="create_page-bg">
+      <div class="create_page">
+        <div>
+          <h3>회의실 생성</h3><br />
+          <div>
+            <p>회의 이름</p>
+            <textarea placeholder="제목을 입력하세요." maxlength="100" class="text-input" id="name"></textarea>
+            <div class="text_count">
+              <span id="count1">0</span>/100
+            </div>
+            <br />
+          </div>
+          <div>
+            <p>설명</p>
+            <textarea placeholder="회의 목적이나 진행 내용을 입력하세요." maxlength="200" class="text-input" id="explain"></textarea>
+            <div class="text_count">
+              <span id="count2">0</span>/200
+            </div>
+            <br />
+          </div>
+          <div>
+            <p>공개 범위</p>
+            <div class="select">
+              <input type="radio" name="protect" value="public" />
+              <div>
+                <p>외부 공개</p>
+                <p>모든 사이트 이용자에게 공개됩니다.</p>
+              </div>
+            </div>
+            <div class="select">
+              <input type="radio" name="protect" value="private" />
+              <div>
+                <p>내부 공개</p>
+                <p>회의 참여자에게만 공개됩니다.</p>
+              </div>
+            </div>
+            <br />
+          </div>
+          <div>
+            <p>회의 개최자</p>
+            <div class="owner">
+              <span class="owner-name">이름</span>
+              <span class="owner-number">학번</span>
+            </div>
+            <br />
+          </div>
+          <div class="result">
+            <button class="create-button" onclick="CreateMeeting()">생성</button>
+            <button class="cancel-button" onclick="CloseCreatePage()">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='meeting_room.js') }}"></script>
+  </body>
+</html>
