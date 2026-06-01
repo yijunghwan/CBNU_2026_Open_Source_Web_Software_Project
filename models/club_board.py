@@ -1,8 +1,8 @@
 from datetime import datetime
 from models import db
 
-class Post(db.Model):
-    __tablename__ = 'posts'
+class ClubBoard(db.Model):
+    __tablename__ = 'club_board'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
@@ -35,4 +35,4 @@ class Post(db.Model):
     comments = db.relationship('Comment', backref=db.backref('post', lazy=True), lazy=True, cascade='all, delete-orphan')#댓글이라 cascade='all, delete-orphan'로 같이 삭제됨
 
     def __repr__(self):
-        return f"<Post(id={self.id}, title='{self.title}', club_name='{self.club_name}', post_type='{self.post_type}')>"
+        return f"<ClubBoard(id={self.id}, title='{self.title}', club_name='{self.club_name}', post_type='{self.post_type}')>"

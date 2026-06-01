@@ -5,6 +5,9 @@
     <title>내 정보 수정</title>
 </head>
 <body>
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
     <h1>내 정보 수정</h1>
 
     {% if not verified %}

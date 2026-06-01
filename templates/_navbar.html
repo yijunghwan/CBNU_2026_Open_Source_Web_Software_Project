@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+
+<nav class="app-navbar" aria-label="주요 네비게이션">
+    <a href="/" class="logo">ALL IN ONE</a>
+    <div class="menu">
+        <a href="/" class="{% if active_page == 'home' %}active{% endif %}">홈</a>
+
+        {% if session.get('id') %}
+            <a href="/user/mypage" class="{% if active_page == 'mypage' %}active{% endif %}">마이페이지</a>
+            <a href="/auth/logout">로그아웃</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}" class="{% if active_page == 'login' %}active{% endif %}">로그인</a>
+            <a href="{{ url_for('auth.register') }}" class="{% if active_page == 'register' %}active{% endif %}">회원가입</a>
+        {% endif %}
+    </div>
+</nav>

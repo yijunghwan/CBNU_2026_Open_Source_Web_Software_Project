@@ -5,13 +5,11 @@
     <title>동아리 관리</title>
 </head>
 <body data-flash-message="{{ message or '' }}">
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
     <h1>{{ club.name }} 동아리 관리</h1>
     <p>회장: {{ user.name }} | 현재 인원: {{ member_count }}명</p>
-    <p>
-        <a href="/user/mypage">마이페이지</a>
-        |
-        <a href="/auth/logout">로그아웃</a>
-    </p>
 
     {% if message %}
         <p>

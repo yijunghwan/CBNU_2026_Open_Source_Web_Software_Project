@@ -6,8 +6,8 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    # 어느 게시글의 댓글인지 (posts.id 외래키)
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    # 어느 게시글의 댓글인지 (club_board.id 외래키)
+    post_id = db.Column(db.Integer, db.ForeignKey('club_board.id'), nullable=False)
 
     # 작성자 (users.id 외래키)
     author_pk = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

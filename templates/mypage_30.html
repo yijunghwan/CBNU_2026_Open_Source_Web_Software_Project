@@ -2,6 +2,9 @@
 <html>
 <head><meta charset="UTF-8"><title>마이페이지 (회장)</title></head>
 <body>
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
     <h1>{{ user.name }} 회장님의 마이페이지</h1>
     <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
     <hr>
