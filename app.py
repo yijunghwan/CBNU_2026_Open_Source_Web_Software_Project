@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 from models import db
 
@@ -16,6 +16,10 @@ from routes.club import club_bp#이정환 네임스페이스 ('club')는 동아�
 app.register_blueprint(auth_bp)
 app.register_blueprint(mypage_bp)
 app.register_blueprint(club_bp)
+
+@app.route('/')
+def main():
+    return render_template('main.html')
 
 if __name__ == '__main__':
     with app.app_context():
