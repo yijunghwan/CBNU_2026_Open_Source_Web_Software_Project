@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
 </head>
-<body>
+<body data-flash-message="{{ message or '' }}">
     <h1>회원가입 신청서</h1>
     
     <form id="registerForm">
@@ -43,6 +43,11 @@
     </form>
 
     <script>
+        const flashMessage = document.body.dataset.flashMessage;
+        if (flashMessage) {
+            alert(flashMessage);
+        }
+
         function register() {
             let form = document.getElementById('registerForm');
             let formData = new FormData(form);

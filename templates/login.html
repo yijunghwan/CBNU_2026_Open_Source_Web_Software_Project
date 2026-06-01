@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>로그인</title>
 </head>
-<body>
+<body data-flash-message="{{ message or '' }}">
     <h1>동아리 관리 시스템 로그인</h1>
     
     <form id="loginForm">
@@ -19,6 +19,11 @@
     </form>
 
     <script>
+        const flashMessage = document.body.dataset.flashMessage;
+        if (flashMessage) {
+            alert(flashMessage);
+        }
+
         function login() {
             let form = document.getElementById('loginForm');
             let formData = new FormData(form);
