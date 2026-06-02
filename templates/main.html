@@ -583,7 +583,7 @@
                     <a href="#"><span class="cat-icon">📋</span>전체 게시판</a>
                 </div>
             </div>
-            <a href="#board-section">회의실</a>
+            <a href="{{ url_for('meeting.meeting_page') }}">회의실</a>
             <a href="/user/mypage" class="{% if active_page == 'mypage' %}active{% endif %}">마이페이지</a><!--이정환이 수정함-->
         </div>
     </nav>
