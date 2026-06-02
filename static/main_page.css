@@ -1,0 +1,179 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+}
+
+body {
+    background-color: #f0f4f8; /* 기존보다 살짝 더 푸른빛이 도는 세련된 배경 */
+    color: #333;
+}
+
+/* 1. 상단 네비게이션 바 */
+.header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95); /* 반투명 흰색 배경 */
+    padding: 20px 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* 부드러운 그림자 */
+    position: sticky; /* 스크롤을 내려도 상단에 고정되게 하여 편의성 증대 */
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: #2A9D8F; /* 포인트 컬러 */
+    font-weight: 800;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #555;
+    margin-left: 25px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #2A9D8F;
+}
+
+/* 2. 환영(Hero) 섹션 (새로 추가됨) */
+.hero-section {
+    background: linear-gradient(135deg, #55E0D9, #2A9D8F); /* 트렌디한 그라데이션 */
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero-section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* 3. 중앙 배너 영역 */
+.banner-section {
+    padding: 30px 0;
+    background-color: white;
+    border-bottom: 1px solid #eee;
+}
+
+.banner-track {
+    display: flex;
+    gap: 20px;
+    padding: 10px 40px;
+    overflow-x: hidden; /* JS로 알아서 스크롤되도록 숨김 처리 */
+}
+
+.banner-item {
+    min-width: 240px;
+    height: 120px;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.banner-item:hover {
+    transform: translateY(-8px) scale(1.02); /* 입체적으로 튀어나오는 효과 */
+    box-shadow: 0 10px 15px rgba(42, 157, 143, 0.2);
+    background: white;
+    color: #2A9D8F;
+}
+
+/* 4. 하단 게시판 영역 */
+.board-container {
+    display: flex;
+    gap: 30px;
+    padding: 50px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.board-box {
+    flex: 1;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease;
+}
+
+.board-box:hover {
+    transform: translateY(-5px); /* 게시판 박스 전체에도 미세한 들림 효과 */
+}
+
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f4f8;
+}
+
+.more-btn {
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.more-btn:hover {
+    color: #2A9D8F;
+}
+
+.board-list {
+    list-style: none;
+}
+
+.board-list li {
+    margin-bottom: 18px;
+}
+
+.board-list a {
+    text-decoration: none;
+    color: #444;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.board-list a:hover {
+    color: #2A9D8F;
+}
+
+/* 뱃지(태그) 디자인 */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-right: 12px;
+    color: white;
+}
+
+.badge.notice { background-color: #EF476F; }
+.badge.free { background-color: #118AB2; }
+.badge.question { background-color: #073B4C; }
+.badge.new { background-color: #FFD166; color: #333; }
+.badge.promo { background-color: #06D6A0; }
+
+@media (max-width: 768px) {
+    .board-container {
+        flex-direction: column;
+    }
+}

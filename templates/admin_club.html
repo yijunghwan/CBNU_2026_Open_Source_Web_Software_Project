@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>동아리 관리</title>
+</head>
+<body data-flash-message="{{ message or '' }}">
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
+    <h1>{{ club.name }} 동아리 관리</h1>
+    <p>회장: {{ user.name }} | 현재 인원: {{ member_count }}명</p>
+
+    {% if message %}
+        <p>
+            {% if message_type == 'error' %}
+                [오류]
+            {% elif message_type == 'success' %}
+                [완료]
+            {% else %}
+                [알림]
+            {% endif %}
+            {{ message }}
+        </p>
+    {% endif %}
+
+    <hr>
+
+    <h2>가입 신청 내역</h2>
+    {% if applications %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>신청자</th>
+                    <th>학번</th>
+                    <th>상태</th>
+                    <th>신청 메모</th>
+                    <th>반려 사유</th>
+                    <th>처리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in applications %}
+                    <tr>
+                        <td>{{ item.applicant.name }}</td>
+                        <td>{{ item.applicant.student_id }}</td>
+                        <td>{{ item.application.status }}</td>
+                        <td>{{ item.application.memo }}</td>
+                        <td>{{ item.application.memo2 }}</td>
+                        <td>
+                            {% if item.application.status == 'PENDING' %}
+                                <form method="post" action="/club/admin/club/application/{{ item.application.id }}/approve">
+                                    <button type="submit">승인</button>
+                                </form>
+                                <form method="post" action="/club/admin/club/application/{{ item.application.id }}/reject">
+                                    <input type="text" name="memo2" placeholder="반려 사유" required>
+                                    <button type="submit">반려</button>
+                                </form>
+                            {% else %}
+                                처리 완료
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>현재 신청 내역이 없습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>본인 동아리원 목록</h2>
+    {% if members %}
+        <table border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>학번</th>
+                    <th>휴대폰</th>
+                    <th>학년</th>
+                    <th>입학년도</th>
+                    <th>휴학</th>
+                    <th>권한</th>
+                    <th>동아리</th>
+                    <th>처리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                    <tr>
+                        <td>{{ member.name }}{% if member.id == user.id %} (회장){% endif %}</td>
+                        <td>{{ member.student_id }}</td>
+                        <td>{{ member.phone }}</td>
+                        <td>{{ member.grade }}</td>
+                        <td>{{ member.admission_year }}</td>
+                        <td>{{ '휴학' if member.off == 1 else '재학' }}</td>
+                        <td>{{ member.role_level }}</td>
+                        <td>{{ member.belonging_club }}</td>
+                        <td>
+                            {% if member.id != user.id and member.role_level < 20 %}
+                                <form method="post" action="/club/admin/club/member/{{ member.id }}/promote/member">
+                                    <button type="submit">간부 임명</button>
+                                </form>
+                            {% endif %}
+                            {% if member.id != user.id and member.role_level < 30 %}
+                                <form method="post" action="/club/admin/club/member/{{ member.id }}/promote/president">
+                                    <button type="submit">회장 임명</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>동아리원이 없습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>동아리원 정보 엑셀 다운로드</h2>
+    <p>엑셀에 포함할 개인정보 항목을 선택하세요.</p>
+    <form method="post" action="/club/admin/club/export">
+        <p><label><input type="checkbox" name="fields" value="user_id" checked> 아이디</label></p>
+        <p><label><input type="checkbox" name="fields" value="student_id" checked> 학번</label></p>
+        <p><label><input type="checkbox" name="fields" value="name" checked> 이름</label></p>
+        <p><label><input type="checkbox" name="fields" value="age" checked> 나이</label></p>
+        <p><label><input type="checkbox" name="fields" value="phone" checked> 휴대폰번호</label></p>
+        <p><label><input type="checkbox" name="fields" value="grade" checked> 학년</label></p>
+        <p><label><input type="checkbox" name="fields" value="admission_year" checked> 입학년도</label></p>
+        <p><label><input type="checkbox" name="fields" value="address" checked> 주소</label></p>
+        <p><label><input type="checkbox" name="fields" value="email" checked> 이메일</label></p>
+        <p><label><input type="checkbox" name="fields" value="off" checked> 휴학여부</label></p>
+        <p><label><input type="checkbox" name="fields" value="role_level" checked> 권한레벨</label></p>
+        <p><label><input type="checkbox" name="fields" value="belonging_club" checked> 동아리</label></p>
+        <button type="submit">엑셀 파일 다운로드</button>
+    </form>
+</body>
+<script>
+    const flashMessage = document.body.dataset.flashMessage;
+    if (flashMessage) {
+        alert(flashMessage);
+    }
+</script>
+</html>

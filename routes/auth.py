@@ -7,7 +7,9 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth') #'auth' 네임스페�
 @auth_bp.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')  # 회원가입 폼 페이지 렌더링   
+        message = request.args.get('message', '')
+        message_type = request.args.get('type', 'info')
+        return render_template('register.html', message=message, message_type=message_type)  # 회원가입 폼 페이지 렌더링
     
     # 프론트엔드에서 전달된 데이터 저장
     user_id = request.form.get('user_id')
@@ -68,7 +70,9 @@ def register():
 @auth_bp.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')  # 로그인 폼 페이지 렌더링 
+        message = request.args.get('message', '')
+        message_type = request.args.get('type', 'info')
+        return render_template('login.html', message=message, message_type=message_type)  # 로그인 폼 페이지 렌더링
     
     input_id = request.form.get('user_id')
     input_pwd = request.form.get('password')
@@ -93,4 +97,4 @@ def login():
 def logout():
     # 현재 로그인된 유저의 세션 소멸시키기
     session.clear()
-    return jsonify({"success": True, "message": "로그아웃 되었습니다."}), 200
+    return redirect(url_for('auth.login', message='로그아웃 되었습니다.', type='info'))

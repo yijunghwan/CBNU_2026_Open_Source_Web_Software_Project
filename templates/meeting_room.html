@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회의실</title>
+    <link rel="stylesheet" href="/static/meeting_room.css" />
+  </head>
+
+  <body>
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+      <div class="meetings-info">
+        <div class="top">
+          <h3>회의실</h3>
+          <button class="create" onclick="openModal()"><div class="plus">+</div>새 방 만들기</button>
+        </div>
+
+        <div class="search">
+          <input class="room-search" type="text" placeholder="방 검색" />
+        </div>
+
+        <div class="filter">
+          <button class="my-list" onclick="activeMyRoom()">내 방</button>
+          <button class="open-list" onclick="activeInvitedRoom()">초대된 방</button>
+        </div>
+
+        <div class="list"></div>
+        <div class="footer" onclick="History()">회의실 기록</div>
+      </div>
+
+      <div class="chatting-place">
+        <div class="top">
+          <div class="title">
+            <h3 class="room-name">회의실</h3>
+            <p>
+              👤<span class="member-count">0</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="chatting"></div>
+
+        <div class="chatting-input">
+          <div class="input-area">
+            <input class="message-input" type="text" placeholder="메시지를 입력하세요..." />
+          </div>
+          <div class="send-button">
+            <button onclick="sendMessage()">➤</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="participants-info">
+        <div class="top">
+          <h3>참여자 <span class="participants-count">0</span></h3>
+          <button onclick="openInvite()">👤+</button>
+        </div>
+
+        <div class="invite-modal">
+          <div class="invite-user">
+            <input class="invite-search" type="text" placeholder="학번" />
+            <span class="invite-name"></span>
+          </div>
+          <button onclick="Invite()">초대</button>
+        </div>
+
+        <div class="participants-list"></div>
+
+        <div class="leave-button">
+          <button onclick="leaveRoom()">↪ 나가기</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-layout">
+      <div class="create-modal">
+        <h2>새 회의실 만들기</h2>
+
+        <p>방 이름</p>
+        <input type="text" placeholder="회의실 이름을 입력하세요." maxlength="50" />
+        <div class="count">
+          <span class="title-count">0</span>/50
+        </div>
+
+        <p>방 설명</p>
+        <textarea placeholder="회의실 설명을 입력하세요." maxlength="100"></textarea>
+        <div class="count">
+          <span class="description-count">0</span>/100
+        </div>
+
+        <div class="modal-button">
+          <button class="cancel-button" onclick="closeModal()">취소</button>
+          <button class="create-button" onclick="createRoom()">생성</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/meeting_room.js"></script>
+  </body>
+</html>

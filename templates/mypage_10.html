@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>마이페이지 (동아리원)</title></head>
+<body>
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
+    <h1>{{ user.name }}님의 마이페이지</h1>
+    <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
+    <hr>
+    
+    <h2>동아리 소속 정보: {{ user.belonging_club }}</h2>
+    <p>우리 동아리 인원수: {{ count }}명</p>
+    
+    <button type="button" onclick="leaveClub()" style="color: red;">동아리 탈퇴하기</button>
+
+    <hr>
+    <button onclick="location.href='/user/change_info'">내 정보 수정</button>
+    <button onclick="location.href='/auth/logout'">로그아웃</button>
+
+    <script>
+        function leaveClub() {
+            if(confirm('정말 동아리를 탈퇴하시겠습니까?')) {
+                // 백엔드 API로 POST 요청 발사
+                fetch('/user/leave_club_10', { 
+                    method: 'POST' 
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message); // 탈퇴 성공 메시지 알림
+                    if(data.success) {
+                        // 성공하면 새로고침! 
+                        // -> 서버가 다시 권한을 검사해서 비동아리원(0) 화면으로 알아서 쫓아냅니다.
+                        window.location.reload(); 
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

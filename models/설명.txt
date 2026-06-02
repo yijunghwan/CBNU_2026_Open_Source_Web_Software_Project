@@ -13,7 +13,7 @@
 
 
 #db에 행 추가하는법
-#db.session.add(객체) -> 객체를 DB 세션에 추가 (커밋 전까지는 실제 DB에 저장되지 않음)
+#db.session.add(체객) -> 객체를 DB 세션에 추가 (커밋 전까지는 실제 DB에 저장되지 않음)
 #db.session.commit() -> 세션에 추가된 객체들을 실제 DB에 저장 (디스크에 최종 물리 Write)
 
 #ex) new_user = User(user_id='2022041022', password='password123', student_id='2022041022', name='이정환', age=22, phone='010-1234-5678', grade=3, address='서울시 강남구', email ='a@naver.com)
