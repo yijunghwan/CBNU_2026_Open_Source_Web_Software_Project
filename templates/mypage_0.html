@@ -2,13 +2,16 @@
 <html>
 <head><meta charset="UTF-8"><title>마이페이지 (비동아리원)</title></head>
 <body>
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
     <h1>{{ user.name }}님의 마이페이지</h1>
     <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
     <hr>
     
     <h2>동아리 소속 정보: 미등록</h2>
 
-    {% if application %}
+    {% if application and application.status == 'PENDING' %}
         <div style="border: 1px solid black; padding: 15px; margin-top: 10px; background-color: #f9f9f9;">
             <h3>가입 심사 대기 중</h3>
             <p>신청 동아리: {{ club_name }}</p>
@@ -18,6 +21,17 @@
             <br>
             <button onclick="cancelApplication()" style="color: red;">가입 신청 취소하기</button>
         </div>
+    {% elif application and application.status == 'REJECTED' %}
+        <div style="border: 1px solid black; padding: 15px; margin-top: 10px; background-color: #fff3f3;">
+            <h3>가입 신청 반려</h3>
+            <p>신청 동아리: {{ club_name }}</p>
+            <p>현재 상태: {{ application.status }}</p>
+            <p>나의 코멘트: {{ application.memo }}</p>
+            <p>반려 사유: {{ application.memo2 }}</p>
+
+            <br>
+            <button onclick="confirmRejectedApplication()">확인</button>
+        </div>
     
     {% else %}
         <p>현재 소속된 동아리가 없습니다.</p>
@@ -25,7 +39,7 @@
     {% endif %}
 
     <hr>
-    <button onclick="location.href='/user/cnange_info'">내 정보 수정</button>
+    <button onclick="location.href='/user/change_info'">내 정보 수정</button>
     <button onclick="location.href='/auth/logout'">로그아웃</button>
 
     <script>
@@ -43,6 +57,17 @@
                     }
                 });
             }
+        }
+
+        function confirmRejectedApplication() {
+            fetch('/user/apply_cancel_0', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
         }
     </script>
 </body>
