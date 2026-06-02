@@ -1,6 +1,8 @@
 from flask import Flask, render_template
 from config import Config
-from models import db
+from sqlalchemy.exc import SQLAlchemyError
+
+from models import Club, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,6 +18,16 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(mypage_bp)
 app.register_blueprint(club_bp)
 app.register_blueprint(meeting_bp)
+
+
+#일종의 전역변수 navbar_clubs를 템플릿에서 사용할 수 있도록 하는 용도 (보안을위해 민감 정보는 넣으면 안됨)
+@app.context_processor
+def inject_navbar_clubs():
+    try:
+        clubs = Club.query.order_by(Club.name.asc()).all()
+    except SQLAlchemyError:
+        clubs = []
+    return {'navbar_clubs': clubs}
 
 @app.route('/')
 def main():
