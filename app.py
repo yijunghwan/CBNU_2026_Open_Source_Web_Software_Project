@@ -21,6 +21,10 @@ app.register_blueprint(meeting_bp)
 def main():
     return render_template('main.html')
 
+@app.route('/')
+def main():
+    return render_template('main.html')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <title>동아리 관리</title>
 </head>
-<body>
+<body data-flash-message="{{ message or '' }}">
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
     <h1>{{ club.name }} 동아리 관리</h1>
     <p>회장: {{ user.name }} | 현재 인원: {{ member_count }}명</p>
-    <p>
-        <a href="/user/mypage">마이페이지</a>
-        |
-        <a href="/auth/logout">로그아웃</a>
-    </p>
 
     {% if message %}
         <p>
@@ -139,4 +137,10 @@
         <button type="submit">엑셀 파일 다운로드</button>
     </form>
 </body>
+<script>
+    const flashMessage = document.body.dataset.flashMessage;
+    if (flashMessage) {
+        alert(flashMessage);
+    }
+</script>
 </html>

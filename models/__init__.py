@@ -6,6 +6,8 @@ db = SQLAlchemy()
 from .user import User
 from .club import Club
 from .club_application import ClubApplication
+from .club_board import ClubBoard
+from .club_comment import Comment
 
 from .meeting import (
     MeetingRoom,

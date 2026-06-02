@@ -5,6 +5,7 @@ from openpyxl import Workbook
 
 from models import db, User, ClubApplication, Club
 
+
 # 동아리 관련 기능 네임스페이스 ('/club')
 club_bp = Blueprint('club', __name__, url_prefix='/club')
 
@@ -23,6 +24,8 @@ def club_admin():
 
     if user.role_level < 30:
         return "회장만 접근할 수 있습니다.", 403
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
     club = Club.find_by_name(user.belonging_club)
     if not club:
@@ -85,8 +88,12 @@ def approve_application(application_id):
 
     if user.role_level < 30:
         return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
-    application = ClubApplication.query.get_or_404(application_id)
+    application = ClubApplication.query.get(application_id)
+    if not application:
+        return _redirect_with_message("신청 내역을 찾을 수 없습니다.", 'error')
     club = Club.find_by_name(user.belonging_club)
     if not club or application.club_id != club.id:
         return _redirect_with_message("해당 신청을 처리할 권한이 없습니다.", 'error')
@@ -120,8 +127,12 @@ def reject_application(application_id):
 
     if user.role_level < 30:
         return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
-    application = ClubApplication.query.get_or_404(application_id)
+    application = ClubApplication.query.get(application_id)
+    if not application:
+        return _redirect_with_message("신청 내역을 찾을 수 없습니다.", 'error')
     club = Club.find_by_name(user.belonging_club)
     if not club or application.club_id != club.id:
         return _redirect_with_message("해당 신청을 처리할 권한이 없습니다.", 'error')
@@ -154,8 +165,12 @@ def promote_member(user_pk):
 
     if user.role_level < 30:
         return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
-    target_user = User.query.get_or_404(user_pk)
+    target_user = User.query.get(user_pk)
+    if not target_user:
+        return _redirect_with_message("대상 사용자를 찾을 수 없습니다.", 'error')
     if target_user.belonging_club != user.belonging_club:
         return _redirect_with_message("같은 동아리원만 변경할 수 있습니다.", 'error')
     if target_user.role_level >= 30:
@@ -184,8 +199,12 @@ def promote_president(user_pk):
 
     if user.role_level < 30:
         return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
-    target_user = User.query.get_or_404(user_pk)
+    target_user = User.query.get(user_pk)
+    if not target_user:
+        return _redirect_with_message("대상 사용자를 찾을 수 없습니다.", 'error')
     if target_user.belonging_club != user.belonging_club:
         return _redirect_with_message("같은 동아리원만 변경할 수 있습니다.", 'error')
     if target_user.id == user.id:
@@ -206,15 +225,17 @@ def promote_president(user_pk):
 def club_excel():
     user_id = session.get('id')
     if not user_id:
-        return jsonify({"success": False, "message": "로그인이 필요합니다."}), 401
+        return redirect(url_for('auth.login'))
 
     user = User.query.filter_by(user_id=user_id).first()
     if not user:
         session.clear()
-        return jsonify({"success": False, "message": "사용자 정보를 찾을 수 없습니다."}), 401
+        return redirect(url_for('auth.login'))
 
     if user.role_level < 30:
-        return jsonify({"success": False, "message": "회장만 접근할 수 있습니다."}), 403
+        return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
 
     selected_fields = request.form.getlist('fields')
     if not selected_fields:
