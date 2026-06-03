@@ -29,6 +29,11 @@
             height: 100vh;
         }
 
+        .app-navbar {
+            position: fixed;
+            top: 0;
+        }
+
         /* =========================================
            [2. 커스텀 네온 커서 - main.html과 동일]
         ========================================= */
@@ -410,17 +415,9 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <!-- 네비게이션 바 - main.html과 동일 -->
-    <nav>
-        <a href="/" class="logo">ALL IN ONE</a>
-        <div class="menu">
-            <a href="/">홈</a>
-            <a href="/auth/login" class="active">로그인</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">게시판</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">회의실</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">마이페이지</a>
-        </div>
-    </nav>
+    {% set active_page = 'login' %}
+    <!-- 이정환이 고친 부분: 로그인페이지에도 공통 네비게이션바를 넣었습니다. -->
+    {% include '_navbar.html' %}
 
     <!-- Three.js 파티클 배경 (main.html과 동일한 분위기) -->
     <div id="canvas-container"></div>

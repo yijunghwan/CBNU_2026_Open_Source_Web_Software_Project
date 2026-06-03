@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <h1>{{ page_title }}</h1>
+
+    <p>scope: {{ scope }}</p>
+    <p>club: {{ club_name }}</p>
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+    <hr>
+
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <a href="{{ url_for('board.board_post', post_id=post.id) }}">{{ post.title }}</a>
+                    | club={{ post.club_name }}
+                    | public={{ post.is_public }}
+                    | notice={{ post.is_notice }}
+                    | writer={{ post.author.name if post.author else 'unknown' }}
+                    | created={{ post.created_at }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>게시글이 없습니다.</p>
+    {% endif %}
+
+    <hr>
+
+    <p><a href="{{ url_for('board.myclub') }}">myclub</a></p>
+    <p><a href="{{ url_for('board.all_board') }}">all</a></p>
+</body>
+</html>

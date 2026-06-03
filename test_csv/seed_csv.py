@@ -17,7 +17,7 @@ os.chdir(root_folder)
 
 # 이제 에러 없이 부모 폴더의 모듈을 가져올 수 있습니다!
 from app import app
-from models import db, User, Club, ClubApplication
+from models import db, User, Club, ClubApplication, ClubBoard
 
 
 def seed_from_csv():
@@ -38,6 +38,7 @@ def seed_from_csv():
         # CSV 파일들이 test_csv 폴더 안에 있으므로, 절대 경로를 합쳐서 열어줍니다.
         users_csv_path = os.path.join(current_folder, 'users.csv')
         apps_csv_path = os.path.join(current_folder, 'apps.csv')
+        boards_csv_path = os.path.join(current_folder, 'boards.csv')
 
         print("👥 users.csv 파일을 읽어 18명의 유저를 주입합니다...")
         with open(users_csv_path, newline='', encoding='utf-8') as f:
@@ -76,6 +77,26 @@ def seed_from_csv():
                         memo=row['memo']
                     )
                     db.session.add(app_record)
+        db.session.commit()
+
+        print("📌 boards.csv 파일을 읽어 게시글 데이터를 주입합니다...")
+        with open(boards_csv_path, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                author = User.query.filter_by(user_id=row['author_user_id']).first()
+                if not author:
+                    continue
+
+                board_post = ClubBoard(
+                    title=row['title'],
+                    content=row['content'],
+                    author_pk=author.id,
+                    club_name=row['club_name'],
+                    is_public=int(row.get('is_public', 0) or 0),
+                    is_notice=int(row.get('is_notice', 0) or 0),
+                    post_type=row.get('post_type', 'FREE') or 'FREE',
+                )
+                db.session.add(board_post)
         db.session.commit()
 
         print("🌟 CSV 대량 데이터 주입이 완벽하게 완료되었습니다!")
