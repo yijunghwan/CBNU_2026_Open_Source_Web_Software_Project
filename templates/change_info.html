@@ -55,6 +55,17 @@
                     <option value="1" {% if user.off == 1 %}selected{% endif %}>휴학(1)</option>
                 </select>
             </div>
+            {% if user.role_level >= 40 %}
+            <div>
+                <label for="belonging_club">소속 동아리(권한 40 전용)</label>
+                <select id="belonging_club" name="belonging_club" required>
+                    <option value="N" {% if user.belonging_club == 'N' %}selected{% endif %}>없음(N)</option>
+                    {% for club_name in club_names %}
+                        <option value="{{ club_name }}" {% if user.belonging_club == club_name %}selected{% endif %}>{{ club_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
             <button type="submit">저장</button>
         </form>
     {% endif %}

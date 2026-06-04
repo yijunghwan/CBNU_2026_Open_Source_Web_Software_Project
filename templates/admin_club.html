@@ -119,6 +119,21 @@
 
     <hr>
 
+    <h2>게시판 글 유형 관리</h2>
+    <p>현재 글 유형: {{ post_types | join(', ') }}</p>
+
+    <form method="post" action="/club/admin/club/post-types/add">
+        <input type="text" name="post_type" placeholder="예: 공지" required>
+        <button type="submit">글 유형 추가</button>
+    </form>
+
+    <form method="post" action="/club/admin/club/post-types/delete">
+        <input type="text" name="post_type" placeholder="삭제할 유형" required>
+        <button type="submit">글 유형 삭제</button>
+    </form>
+
+    <hr>
+
     <h2>동아리원 정보 엑셀 다운로드</h2>
     <p>엑셀에 포함할 개인정보 항목을 선택하세요.</p>
     <form method="post" action="/club/admin/club/export">

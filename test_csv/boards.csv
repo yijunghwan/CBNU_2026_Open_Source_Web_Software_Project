@@ -1,10 +1,10 @@
 title,content,author_user_id,club_name,is_public,is_notice,post_type
-EMSYS 내부 공지,EMSYS 동아리 내부 공지입니다.,admin_e,EMSYS,0,1,NOTICE
-EMSYS 공개 안내,EMSYS 외부 공개 가능한 안내입니다.,member_e1,EMSYS,1,0,FREE
-EMSYS 스터디 모집,EMSYS 스터디 모집 글입니다.,member_e2,EMSYS,1,0,STUDY
-RCV 내부 공지,RCV 동아리 내부 공지입니다.,admin_r,RCV,0,1,NOTICE
-RCV 공개 안내,RCV 외부 공개 가능한 안내입니다.,member_r1,RCV,1,0,FREE
-RCV 프로젝트 소개,RCV 프로젝트 소개 글입니다.,member_r2,RCV,1,0,PROJECT
-GDSC 내부 공지,GDSC 동아리 내부 공지입니다.,admin_g,GDSC,0,1,NOTICE
-GDSC 공개 안내,GDSC 외부 공개 가능한 안내입니다.,member_g1,GDSC,1,0,FREE
-GDSC QNA,GDSC 질문 답변 글입니다.,member_g2,GDSC,1,0,QNA
+EMSYS 내부 공지,EMSYS 동아리 내부 공지입니다.,admin_e,EMSYS,0,1,
+EMSYS 공개 안내,EMSYS 외부 공개 가능한 안내입니다.,member_e1,EMSYS,1,0,
+EMSYS 스터디 모집,EMSYS 스터디 모집 글입니다.,member_e2,EMSYS,1,0,스터디
+RCV 내부 공지,RCV 동아리 내부 공지입니다.,admin_r,RCV,0,1,
+RCV 공개 안내,RCV 외부 공개 가능한 안내입니다.,member_r1,RCV,1,0,
+RCV 프로젝트 소개,RCV 프로젝트 소개 글입니다.,member_r2,RCV,1,0,프로젝트
+GDSC 내부 공지,GDSC 동아리 내부 공지입니다.,admin_g,GDSC,0,1,
+GDSC 공개 안내,GDSC 외부 공개 가능한 안내입니다.,member_g1,GDSC,1,0,
+GDSC 질문 답변,GDSC 질문 답변 글입니다.,member_g2,GDSC,1,0,질문

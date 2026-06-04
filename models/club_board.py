@@ -25,8 +25,8 @@ class ClubBoard(db.Model):
     # 공지 여부: 0=일반글 / 1=공지(최상단 고정)
     is_notice = db.Column(db.Integer, default=0, nullable=False)
 
-    # 글 유형: 'FREE' / 'QNA' / 'STUDY' / 'PROJECT'
-    post_type = db.Column(db.String(20), default='FREE', nullable=False)
+    # 글 유형: 빈 문자열=''은 기본 자유글, 그 외는 동아리 커스텀 유형
+    post_type = db.Column(db.String(20), default='', nullable=False)
 
     # 관계 정의: post.author.name 으로 작성자 접근 가능
     author = db.relationship('User', backref=db.backref('posts', lazy=True))

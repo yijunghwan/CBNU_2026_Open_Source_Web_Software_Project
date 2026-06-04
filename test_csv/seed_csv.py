@@ -28,9 +28,9 @@ def seed_from_csv():
 
         print("🏢 동아리 3개(EMSYS, RCV, GDSC)를 생성합니다...")
         clubs = {
-            'EMSYS': Club(name='EMSYS'),
-            'RCV': Club(name='RCV'),
-            'GDSC': Club(name='GDSC')
+            'EMSYS': Club(name='EMSYS', post_types_json='["스터디"]'),
+            'RCV': Club(name='RCV', post_types_json='["프로젝트"]'),
+            'GDSC': Club(name='GDSC', post_types_json='["질문"]')
         }
         db.session.add_all(clubs.values())
         db.session.commit()
@@ -40,7 +40,7 @@ def seed_from_csv():
         apps_csv_path = os.path.join(current_folder, 'apps.csv')
         boards_csv_path = os.path.join(current_folder, 'boards.csv')
 
-        print("👥 users.csv 파일을 읽어 18명의 유저를 주입합니다...")
+        print("👥 users.csv 파일을 읽어 유저 데이터를 주입합니다...")
         with open(users_csv_path, newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -94,7 +94,7 @@ def seed_from_csv():
                     club_name=row['club_name'],
                     is_public=int(row.get('is_public', 0) or 0),
                     is_notice=int(row.get('is_notice', 0) or 0),
-                    post_type=row.get('post_type', 'FREE') or 'FREE',
+                    post_type=(row.get('post_type') or '').strip(),
                 )
                 db.session.add(board_post)
         db.session.commit()

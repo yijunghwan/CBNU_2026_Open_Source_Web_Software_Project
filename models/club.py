@@ -5,6 +5,11 @@ class Club(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)#id
     name = db.Column(db.String(50), unique=True, nullable=False)      # 동아리 이름 
+    post_types_json = db.Column(
+        db.Text,
+        nullable=False,
+        default='[]'
+    )
 
     @classmethod
     def find_by_name(cls, club_name):

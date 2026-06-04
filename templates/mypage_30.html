@@ -15,9 +15,13 @@
     <div style="border: 2px solid red; padding: 10px; margin-top: 10px;">
         <h3>회장 관리자 메뉴</h3>
         <button onclick="location.href='/club/admin/club'">동아리 신청자/부원 관리 페이지</button>
-        <button onclick="location.href='/ta/chat'">조교단 다이렉트 소통방</button>
+        {% if user.role_level >= 40 %}
+        <button onclick="alert('동아리 제작 기능은 준비 중입니다.');">동아리 제작</button>
+        {% endif %}
     </div>
 
+    <hr>
+    <button onclick="location.href='/board/my-posts'">내가 쓴 글 관리</button>
     <hr>
     <button onclick="location.href='/user/change_info'">내 정보 수정</button>
     <button onclick="location.href='/auth/logout'">로그아웃</button>

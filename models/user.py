@@ -5,7 +5,7 @@ class User(db.Model):
     
     __table_args__ = (
         db.CheckConstraint(
-            "(role_level < 10) OR (belonging_club != 'N')", 
+            "(role_level < 10) OR (belonging_club != 'N') OR (role_level >= 40)", 
             name='check_valid_club_member'
         ),
     )# 혹시 모를 버그 방지용
