@@ -1,0 +1,221 @@
+/* =========================================
+   전역 CSS - 기존 프로젝트 공통 스타일 통합
+   (main.css, login.css, register.css 공통 부분)
+========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #050505;
+  --color-primary: #00d4ff;
+  --color-secondary: #a855f7;
+  --color-accent: #ff00c8;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-border: rgba(0, 212, 255, 0.2);
+  --color-glass: rgba(255, 255, 255, 0.04);
+  --color-glass-hover: rgba(255, 255, 255, 0.08);
+  --font-main: 'Outfit', 'Noto Sans KR', sans-serif;
+  --nav-height: 70px;
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* 커스텀 커서 */
+.cursor-dot,
+.cursor-outline {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 9999;
+  transition: opacity 0.3s;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-primary);
+}
+
+.cursor-outline {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(0, 212, 255, 0.6);
+  background: transparent;
+}
+
+/* 네비게이션 바 */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(5, 5, 5, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+  z-index: 1000;
+}
+
+nav .logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-primary);
+  text-decoration: none;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+nav .menu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+nav .menu a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  transition: color 0.3s;
+  cursor: none;
+}
+
+nav .menu a:hover,
+nav .menu a.active {
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+}
+
+/* 드롭다운 */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s;
+}
+
+.dropdown.open .arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  min-width: 180px;
+  background: rgba(10, 10, 20, 0.95);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown.open .dropdown-menu {
+  display: flex;
+}
+
+.dropdown-menu a {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background: var(--color-glass-hover);
+}
+
+.cat-icon {
+  font-size: 1rem;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 0;
+}
+
+/* 버튼 공통 스타일 */
+button {
+  cursor: none;
+  font-family: var(--font-main);
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.6);
+}
+
+/* ── 게시판 카드 스크롤 진입 애니메이션 ─────────────────────────────── */
+#board-section > * {
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+}
+
+#board-section.is-visible > *:nth-child(1) {
+  animation: cardReveal 0.6s 0.2s forwards;
+}
+
+#board-section.is-visible > *:nth-child(2) {
+  animation: cardReveal 0.6s 0.4s forwards;
+}
+
+@keyframes cardReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

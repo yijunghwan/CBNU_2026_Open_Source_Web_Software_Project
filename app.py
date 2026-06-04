@@ -1,27 +1,38 @@
-from flask import Flask, render_template
+from flask import Flask, send_from_directory, jsonify
 from config import Config
 from models import db
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# 전역 데이터베이스 초기화 결합
 db.init_app(app)
 
-
-from routes.auth import auth_bp#이정환 네임스페이스 ('auth')는 로그인/회원가입/로그아웃 기능 담당
-from routes.mypage import mypage_bp#이정환 네임스페이스 ('mypage')는 마이페이지 기능 담당
-from routes.club import club_bp#이정환 네임스페이스 ('club')는 동아리관리 기능 담당
+from routes.auth import auth_bp
+from routes.mypage import mypage_bp
+from routes.club import club_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(mypage_bp)
 app.register_blueprint(club_bp)
 
-@app.route('/')
-def main():
-    return render_template('main.html')
+# ─── React 빌드 파일 서빙 ───────────────────────────────────────────────────
+REACT_BUILD_DIR = os.path.join(os.path.dirname(__file__), 'static', 'react_build')
+
+# /assets/* → React 빌드 번들 파일 서빙
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    return send_from_directory(os.path.join(REACT_BUILD_DIR, 'assets'), filename)
+
+# API 경로(/auth/*, /user/*, /club/*)는 각 Blueprint가 먼저 처리.
+# 나머지 모든 URL → React SPA(index.html) 반환
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    return send_from_directory(REACT_BUILD_DIR, 'index.html')
+
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() 
+        db.create_all()
     app.run(debug=True, port=5001)

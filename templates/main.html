@@ -18,11 +18,7 @@
         <div class="logo">ALL IN ONE</div>
         <div class="menu">
             <a href="#">홈</a>
-            {% if logged_in %}
-            <a href="{{ url_for('auth.logout') }}">로그아웃</a>
-            {% else %}
             <a href="{{ url_for('auth.login') }}">로그인</a>
-            {% endif %}
             <div class="dropdown" id="board-dropdown">
                 <a href="#" class="dropdown-toggle" id="board-toggle" onclick="toggleDropdown(event)">
                     게시판 <span class="arrow">▼</span>
