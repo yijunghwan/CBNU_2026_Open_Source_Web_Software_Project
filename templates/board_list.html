@@ -3,120 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='board_list.css') }}">
 </head>
 <body>
     {% include '_navbar.html' %}
 
-    <h1>{{ page_title }}</h1>
+    <div class="layout">
+        <div class="board">
 
-    <p>scope: {{ scope }}</p>
-    <p>club: {{ club_name }}</p>
+            <div class="header">
+                <div>
+                    <h1>{{ page_title }}</h1>
+                    <p class="info">scope: {{ scope }} | club: {{ club_name }}</p>
+                </div>
 
-    <p>
-        필터:
-        {% if scope == 'all' %}
-            <a href="{{ url_for('board.all_board', post_type='all') }}">전체보기</a>
-            |
-            <a href="{{ url_for('board.all_board', post_type='free') }}">자유글(유형없음)</a>
-            {% for item in available_post_types %}
-                |
-                <a href="{{ url_for('board.all_board', post_type=item) }}">{{ item }}</a>
-            {% endfor %}
-        {% elif scope == 'anotherclub' %}
-            <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='all') }}">전체보기</a>
-            |
-            <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='free') }}">자유글(유형없음)</a>
-            {% for item in available_post_types %}
-                |
-                <a href="{{ url_for('board.anterclub', club_name=club_name, post_type=item) }}">{{ item }}</a>
-            {% endfor %}
-        {% else %}
-            <a href="{{ url_for('board.myclub', post_type='all') }}">전체보기</a>
-            |
-            <a href="{{ url_for('board.myclub', post_type='free') }}">자유글(유형없음)</a>
-            {% for item in available_post_types %}
-                |
-                <a href="{{ url_for('board.myclub', post_type=item) }}">{{ item }}</a>
-            {% endfor %}
-        {% endif %}
-    </p>
-    <p>현재 선택: {{ selected_post_type }}</p>
+                {% if scope == 'myclub' and club_name != 'N' %}
+                    <a class="write-button" href="{{ url_for('board.write_post') }}">글쓰기</a>
+                {% endif %}
+            </div>
 
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
+            <div class="filter">
+                <span>필터:</span>
 
-    {% if scope == 'myclub' and club_name != 'N' %}
-        <p><a href="{{ url_for('board.write_post') }}">글쓰기</a></p>
-    {% endif %}
+                {% if scope == 'all' %}
+                    <a href="{{ url_for('board.all_board', post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.all_board', post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.all_board', post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% elif scope == 'anotherclub' %}
+                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.anterclub', club_name=club_name, post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('board.myclub', post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.myclub', post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.myclub', post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
 
-    <hr>
+            <p class="select">현재 선택: {{ selected_post_type }}</p>
 
-    {% if posts %}
-        {% if scope == 'all' %}
-            <ul>
-                {% for post in posts %}
-                    <li>
-                        <a href="{{ url_for('board.board_post', post_id=post.id) }}">{{ post.title }}</a>
-                        | club={{ post.club_name }}
-                        | public={{ post.is_public }}
-                        | notice={{ post.is_notice }}
-                        | type={{ post.post_type if post.post_type else '자유(유형없음)' }}
-                        | writer={{ post.author.name if post.author else 'unknown' }}
-                        | created={{ post.created_at }}
-                    </li>
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+
+            <hr>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>분류</th>
+                        <th>제목</th>
+                        <th>동아리</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if posts %}
+                        {% for post in posts %}
+                            <tr class="{{ 'important-row' if post.is_notice == 1 else '' }}" onclick="location.href='{{ url_for('board.board_post', post_id=post.id) }}'">
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ total_posts - ((page - 1) * 10 + loop.index0) }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ post.post_type if post.post_type else '자유' }}
+                                    {% endif %}
+                                </td>
+
+                                <td class="title">
+                                    {{ post.title }}
+                                </td>
+
+                                <td>{{ post.club_name }}</td>
+                                <td>{{ post.author.name if post.author else 'unknown' }}</td>
+                                <td>{{ post.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for i in range(10 - posts|length) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for i in range(10) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                {% set start_page = ((page - 1) // 5) * 5 + 1 %}
+                {% set end_page = start_page + 4 %}
+
+                {% if end_page > total_pages %}
+                    {% set end_page = total_pages %}
+                {% endif %}
+
+                {% if page > 1 %}
+                    <a href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ page - 1 }}">‹</a>
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                    <a class="{% if p == page %}active{% endif %}" href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ p }}"> {{ p }} </a>
                 {% endfor %}
-            </ul>
-        {% else %}
-            {% set notice_posts = posts | selectattr('is_notice', 'equalto', 1) | list %}
-            {% set normal_posts = posts | rejectattr('is_notice', 'equalto', 1) | list %}
 
-            {% if notice_posts %}
-                <h2>공지</h2>
-                <ul>
-                    {% for post in notice_posts %}
-                        <li>
-                            <a href="{{ url_for('board.board_post', post_id=post.id) }}">{{ post.title }}</a>
-                            | club={{ post.club_name }}
-                            | public={{ post.is_public }}
-                            | notice={{ post.is_notice }}
-                            | type={{ post.post_type if post.post_type else '자유(유형없음)' }}
-                            | writer={{ post.author.name if post.author else 'unknown' }}
-                            | created={{ post.created_at }}
-                        </li>
-                    {% endfor %}
-                </ul>
-                <hr>
-            {% endif %}
+                {% if page < total_pages %}
+                    <a href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ page + 1 }}">›</a>
+                {% endif %}
+            </div>
 
-            {% if normal_posts %}
-                <h2>일반 글</h2>
-                <ul>
-                    {% for post in normal_posts %}
-                        <li>
-                            <a href="{{ url_for('board.board_post', post_id=post.id) }}">{{ post.title }}</a>
-                            | club={{ post.club_name }}
-                            | public={{ post.is_public }}
-                            | notice={{ post.is_notice }}
-                            | type={{ post.post_type if post.post_type else '자유(유형없음)' }}
-                            | writer={{ post.author.name if post.author else 'unknown' }}
-                            | created={{ post.created_at }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            <hr>
 
-            {% if not notice_posts and not normal_posts %}
-                <p>게시글이 없습니다.</p>
-            {% endif %}
-        {% endif %}
-    {% else %}
-        <p>게시글이 없습니다.</p>
-    {% endif %}
+            <div class="link">
+                <a href="{{ url_for('board.myclub') }}">myclub</a>
+                <span>|</span>
+                <a href="{{ url_for('board.all_board') }}">all</a>
+            </div>
 
-    <hr>
-
-    <p><a href="{{ url_for('board.myclub') }}">myclub</a></p>
-    <p><a href="{{ url_for('board.all_board') }}">all</a></p>
+        </div>
+    </div>
 </body>
 </html>

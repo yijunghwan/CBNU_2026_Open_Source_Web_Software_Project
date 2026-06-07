@@ -60,8 +60,7 @@ def ensure_schema_updates():
         connection.execute(
             text(
                 "ALTER TABLE clubs "
-                "ADD COLUMN post_types_json TEXT NOT NULL "
-                "DEFAULT '[]'"
+                "ADD COLUMN post_types_json TEXT"
             )
         )
 

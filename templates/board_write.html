@@ -3,61 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>글쓰기</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='board_write.css') }}">
 </head>
 <body>
     {% include '_navbar.html' %}
 
-    <h1>글쓰기</h1>
-    <p>게시판: {{ club_name }}</p>
+    <div class="layout">
+        <div class="write">
 
-    {% if message %}
-        <p>
-            {% if message_type == 'error' %}[오류]{% elif message_type == 'success' %}[완료]{% else %}[알림]{% endif %}
-            {{ message }}
-        </p>
-    {% endif %}
+            <div class="header">
+                <h1>글쓰기</h1>
+                <p>게시판: {{ club_name }}</p>
+            </div>
 
-    <form method="post" action="{{ url_for('board.write_post') }}">
-        <p>
-            <label for="title">제목</label><br>
-            <input id="title" name="title" type="text" maxlength="150" required>
-        </p>
+            {% if message %}
+                <p class="message">
+                    {% if message_type == 'error' %}[오류]{% elif message_type == 'success' %}[완료]{% else %}[알림]{% endif %}
+                    {{ message }}
+                </p>
+            {% endif %}
 
-        <p>
-            <label for="content">내용</label><br>
-            <textarea id="content" name="content" rows="12" cols="80" required></textarea>
-        </p>
+            <form method="post" action="{{ url_for('board.write_post') }}" class="write-area">
+                <div class="title">
+                    <label for="title">제목</label>
+                    <input id="title" name="title" type="text" maxlength="150" required>
+                </div>
 
-        <p>
-            <label for="post_type">글 유형</label><br>
-            <select id="post_type" name="post_type">
-                <option value="">자유(유형없음)</option>
-                {% for post_type in post_types %}
-                    <option value="{{ post_type }}">{{ post_type }}</option>
-                {% endfor %}
-            </select>
-        </p>
+                <div class="content">
+                    <label for="content">내용</label>
+                    <textarea id="content" name="content" rows="12" required></textarea>
+                </div>
 
-        <p>
-            <label>
-                <input type="checkbox" name="is_public" value="1"> 공개글
-            </label>
-        </p>
+                <div class="select">
+                    <label for="post_type">글 유형</label>
+                    <select id="post_type" name="post_type">
+                        <option value="">자유(유형없음)</option>
+                        {% for post_type in post_types %}
+                            <option value="{{ post_type }}">{{ post_type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        {% if can_notice %}
-            <p>
-                <label>
-                    <input type="checkbox" name="is_notice" value="1"> 공지글
-                </label>
-            </p>
-        {% else %}
-            <p>공지글은 간부 이상만 작성 가능합니다.</p>
-            <input type="hidden" name="is_notice" value="0">
-        {% endif %}
+                <div class="check-area">
+                    <label>
+                        <input type="checkbox" name="is_public" value="1">
+                        공개글
+                    </label>
 
-        <button type="submit">등록</button>
-    </form>
+                    {% if can_notice %}
+                        <label>
+                            <input type="checkbox" name="is_notice" value="1">
+                            공지글
+                        </label>
+                    {% else %}
+                        <p>공지글은 간부 이상만 작성 가능합니다.</p>
+                        <input type="hidden" name="is_notice" value="0">
+                    {% endif %}
+                </div>
 
-    <p><a href="{{ url_for('board.myclub') }}">목록으로</a></p>
+                <div class="button">
+                    <a href="{{ url_for('board.myclub') }}" class="cancel-button">목록으로</a>
+                    <button type="submit" class="submit-button">등록</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
 </body>
-</html>

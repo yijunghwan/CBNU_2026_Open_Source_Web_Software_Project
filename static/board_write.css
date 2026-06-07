@@ -1,0 +1,165 @@
+body {
+    margin: 0;
+    background-color: #05070d;
+    color : white;
+}
+
+a {
+    color: #00e5ff;
+    text-decoration: none;
+}
+
+.layout {
+    width: 100%;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.write {
+    width: 80%;
+    margin: 0 auto;
+    padding: 28px;
+    background-color: #0b0f1a;
+    border: 1px solid #1c2333;
+    border-radius: 10px;
+}
+
+.header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1c2333;
+}
+
+.header h1 {
+    margin: 0 0 10px;
+    color: white;
+    font-size: 28px;
+}
+
+.header p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.message {
+    margin-top: 20px;
+    padding: 12px;
+    border: 1px solid #00e5ff;
+    border-radius: 6px;
+    color: #00e5ff;
+}
+
+.write-area {
+    margin-top: 24px;
+}
+
+.title,
+.content,
+.select {
+    margin-bottom: 24px;
+}
+
+.title label,
+.content label,
+.select label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+    font-weight: bold;
+}
+
+.title input{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #05070d;
+    border: 1px solid #1f2a44;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.content textarea{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #05070d;
+    border: 1px solid #1f2a44;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 14px;
+    min-height: 320px;
+    resize: none;
+}
+
+.select select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #05070d;
+    border: 1px solid #1f2a44;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.title input:focus,
+.content textarea:focus,
+.select select:focus {
+    outline: none;
+    border-color: #00e5ff;
+}
+
+.check-area {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+    color: #cbd5e1;
+}
+
+.check-area label {
+    cursor: pointer;
+}
+
+.check-area input[type="checkbox"] {
+    accent-color: #00aaff;
+}
+
+.check-area p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.button {
+    margin-top: 35px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-button {
+    padding: 10px 20px;
+    border: 1px solid #1f2a44;
+    border-radius: 8px;
+    color: #9ca3af;
+}
+
+.cancel-button:hover {
+    border-color: #00e5ff;
+    color: #00e5ff;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00aaff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0094dd;
+}
