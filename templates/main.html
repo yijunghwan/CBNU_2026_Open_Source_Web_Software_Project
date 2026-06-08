@@ -14,31 +14,8 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <nav>
-        <div class="logo">ALL IN ONE</div>
-        <div class="menu">
-            <a href="#">홈</a>
-            <a href="{{ url_for('auth.login') }}">로그인</a>
-            <div class="dropdown" id="board-dropdown">
-                <a href="#" class="dropdown-toggle" id="board-toggle" onclick="toggleDropdown(event)">
-                    게시판 <span class="arrow">▼</span>
-                </a>
-                <div class="dropdown-menu">
-                    <a href="#"><span class="cat-icon">📚</span>학술</a>
-                    <a href="#"><span class="cat-icon">⚽</span>체육</a>
-                    <a href="#"><span class="cat-icon">🎨</span>문화·예술</a>
-                    <a href="#"><span class="cat-icon">🤝</span>봉사</a>
-                    <a href="#"><span class="cat-icon">🎭</span>공연</a>
-                    <a href="#"><span class="cat-icon">🎵</span>음악</a>
-                    <a href="#"><span class="cat-icon">💻</span>정보·기술</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#"><span class="cat-icon">📋</span>전체 게시판</a>
-                </div>
-            </div>
-            <a href="{{ url_for('meeting.meeting_page') }}">회의실</a>
-            <a href="/user/mypage" class="{% if active_page == 'mypage' %}active{% endif %}">마이페이지</a><!--이정환이 수정함-->
-        </div>
-    </nav>
+    <!-- 이정환이 고친 부분: 메인페이지에도 공통 네비게이션바를 넣었습니다. -->
+    {% include '_navbar.html' %}
 
     <div id="hero-section">
         <div id="ui-container">
@@ -51,35 +28,47 @@
         <div id="canvas-container"></div>
     </div>
 
+    <!-- 이정환이 고친 부분: 공용게시판은 /board/all 공개글 데이터로 출력합니다. -->
     <!-- 하단 게시판 영역 -->
     <div id="board-section">
         <!-- 공용게시판 -->
         <div class="board">
             <h2>공용게시판</h2>
             <ul class="board-list">
-                <li><span>[공지] 이번 주 동아리 연합 회의 일정</span> <span class="date">10.24</span></li>
-                <li><span>동아리방 대관 신청 관련 안내</span> <span class="date">10.23</span></li>
-                <li><span>분실물 보관소 운영 시간 변경</span> <span class="date">10.21</span></li>
-                <li><span>자유게시판 이용 수칙 안내</span> <span class="date">10.20</span></li>
-                <li><span>동아리 지원금 정산서류 양식</span> <span class="date">10.19</span></li>
+                {% for post in public_posts %}
+                <li>
+                    <a class="board-link" href="{{ url_for('board.board_post', post_id=post.id) }}">
+                        <span class="board-title">{{ post.title }}</span>
+                        <span class="board-meta">
+                            <span>{{ post.club_name }}</span>
+                            <span>{{ post.author.name if post.author else 'unknown' }}</span>
+                        </span>
+                    </a>
+                </li>
+                {% else %}
+                <li><span>공개 게시글이 없습니다.</span></li>
+                {% endfor %}
             </ul>
+            <div style="margin-top: 18px;">
+                <a href="{{ url_for('board.all_board') }}" style="color: #00d4ff; text-decoration: none;">전체 공용게시판
+                    보기</a>
+            </div>
         </div>
         <!-- 홍보게시판 -->
         <div class="board">
             <h2>홍보게시판</h2>
             <ul class="board-list">
-                <li><span>[밴드동아리] 2학기 신입 기수 모집!</span> <span class="date">10.24</span></li>
-                <li><span>코딩 동아리에서 해커톤 팀원 구합니다</span> <span class="date">10.23</span></li>
-                <li><span>사진동아리 정기 전시회 개최 안내</span> <span class="date">10.22</span></li>
-                <li><span>영화 감상 동아리 주말 상영작 안내</span> <span class="date">10.20</span></li>
-                <li><span>댄스동아리 버스킹 공연 (학생회관 앞)</span> <span class="date">10.18</span></li>
+                <li><span>홍보 게시판은 아직 준비중입니다.</span></li>
+                <li><span>추후 동아리 홍보글을 별도 영역으로 분리할 예정입니다.</span></li>
+                <li><span>현재는 공용게시판만 /board/all 데이터로 연결됩니다.</span></li>
             </ul>
         </div>
     </div>
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="/static/main_page.js"></script>
+    <<<<<<< HEAD=======<!-- 3D 구현을 위해 외부 라이브러리인 Three.js를 불러옵니다. -->
+        >>>>>>> 2138e830dbd2a5f06623a71c3e3c5358493d34f2
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="/static/main_page.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='board_post.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="post">
+            <div class="header">
+                <h1>{{ post.title }}</h1>
+                {% if message %}
+                    <p>
+                        {% if message_type == 'error' %}
+                            [오류]
+                        {% elif message_type == 'success' %}
+                            [완료]
+                        {% else %}
+                            [알림]
+                        {% endif %}
+                        {{ message }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="info">
+                <div class="info-left">
+                    <p>동아리: {{ post.club_name }}</p>
+                    <p>작성자: {{ post.author.name if post.author else 'unknown' }}</p>
+                    <p>작성일: {{ post.created_at }}</p>
+                </div>
+                {% if user and user.id == post.author_pk %}
+                    <p>
+                        <a class="edit-link"href="{{ url_for('board.edit_post', Post_id=post.id) }}">글 수정하기</a>
+                    </p>
+                {% endif %}
+            </div>
+
+            <hr>
+
+            <div class="content">{{ post.content }}</div>
+
+            <hr>
+
+            <div class="comment">
+                <div class="comment-header">
+                    <h2>댓글</h2>
+                </div>
+                <div class="comment-list">
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="comment-content">
+                                <div class="comment-info">
+                                <span class="comment-number">
+                                    {{ ((comment_page - 1) * 10) + loop.index }}
+                                </span>
+                                {{ comment.author.name if comment.author else 'unknown' }}
+                                : {{ comment.content }}
+                                ({{ comment.created_at }})
+                                </div>
+                                {% if user and user.id == comment.author_pk %}
+                                    <a href="{{ url_for('board.edit_comment', Comment_id=comment.id) }}" class="comment-edit">
+                                        수정하기
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>댓글이 없습니다.</p>
+                    {% endif %}
+                </div>
+
+                <div class="pagination">
+                    {% set start_page = ((comment_page - 1) // 5) * 5 + 1 %}
+                    {% set end_page = start_page + 4 %}
+                    {% if end_page > comment_total_pages %}
+                        {% set end_page = comment_total_pages %}
+                    {% endif %}
+                    {% if comment_page > 1 %}
+                        <a href="{{ request.path }}?comment_page={{ comment_page - 1 }}">
+                            ‹
+                        </a>
+                    {% endif %}
+                    {% for p in range(start_page, end_page + 1) %}
+                        <a
+                            class="{% if p == comment_page %}active{% endif %}"
+                            href="{{ request.path }}?comment_page={{ p }}">
+                            {{ p }}
+                        </a>
+                    {% endfor %}
+                    {% if comment_page < comment_total_pages %}
+                        <a href="{{ request.path }}?comment_page={{ comment_page + 1 }}">
+                            ›
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="comment-write">
+                    <form method="post"
+                          action="{{ url_for('board.write_comment', Post_id=post.id) }}">
+                        <textarea name="content" rows="3" cols="80" placeholder="댓글을 입력하세요." required></textarea>
+                        <button type="submit">
+                            댓글 작성
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="link">
+                <a href="{{ url_for('board.myclub') }}">
+                    내 동아리 게시판으로
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

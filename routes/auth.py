@@ -1,9 +1,97 @@
 from flask import Blueprint, request, session, jsonify
 from flask import render_template, redirect, url_for
-from models import db, User, ClubApplication, Club
+from datetime import datetime
+
+from models import db, User, ClubApplication, Club, MeetingRoom, MeetingRoomMember, MeetingRoomInvite
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth') #'auth' 네임스페이스 정의 (이 파일의 모든 주소 앞에 자동으로 /auth가 붙음)
+#Ai작성
+EXECUTIVE_ROOM_NAME = '회장단-관리자 공용 회의실'
 
+
+def _sync_executive_meeting_room(login_user):
+    if login_user.role_level < 40:
+        return
+
+    room = (
+        MeetingRoom.query
+        .filter_by(room_name=EXECUTIVE_ROOM_NAME, status='active')
+        .order_by(MeetingRoom.id.asc())
+        .first()
+    )
+
+    if room is None:
+        room = MeetingRoom(
+            room_name=EXECUTIVE_ROOM_NAME,
+            description='권한 30 이상 전용 자동 관리 회의실',
+            created_by=login_user.id,
+            status='active',
+        )
+        db.session.add(room)
+        db.session.flush()
+
+        owner_member = MeetingRoomMember(
+            room_id=room.id,
+            user_id=login_user.id,
+            role='owner',
+            is_active=True,
+        )
+        db.session.add(owner_member)
+
+    # 로그인한 40 권한 사용자는 방에 반드시 포함
+    current_member = MeetingRoomMember.query.filter_by(room_id=room.id, user_id=login_user.id).first()
+    if current_member is None:
+        db.session.add(
+            MeetingRoomMember(
+                room_id=room.id,
+                user_id=login_user.id,
+                role='member',
+                is_active=True,
+            )
+        )
+    else:
+        current_member.is_active = True
+        current_member.left_at = None
+
+    # 기존 인원 중 30 미만 강퇴(비활성)
+    active_members = MeetingRoomMember.query.filter_by(room_id=room.id, is_active=True).all()
+    for member in active_members:
+        target_user = User.query.get(member.user_id)
+        if target_user is None:
+            continue
+        if target_user.role_level < 30:
+            member.is_active = False
+            member.left_at = datetime.now()
+
+    # 30 이상 전체 사용자를 강제 초대(즉시 참여 처리)
+    leaders = User.query.filter(User.role_level >= 30).all()
+    for leader in leaders:
+        member_record = MeetingRoomMember.query.filter_by(
+            room_id=room.id,
+            user_id=leader.id,
+        ).first()
+
+        if member_record is None:
+            db.session.add(
+                MeetingRoomMember(
+                    room_id=room.id,
+                    user_id=leader.id,
+                    role='member',
+                    is_active=True,
+                )
+            )
+        else:
+            member_record.is_active = True
+            member_record.left_at = None
+
+    # 기존 pending 초대는 강제 초대 정책으로 모두 정리
+    pending_invites = MeetingRoomInvite.query.filter_by(room_id=room.id, status='pending').all()
+    for invite in pending_invites:
+        invite.status = 'rejected'
+
+    db.session.commit()
+
+#ai작성 끝
 @auth_bp.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'GET':
@@ -84,6 +172,13 @@ def login():
     if user and user.password == input_pwd:
 
         session['id'] = user.user_id
+
+        if user.role_level >= 40:
+            try:
+                _sync_executive_meeting_room(user)
+            except Exception as e:
+                db.session.rollback()
+                print(f"[회의실 자동정리 실패] {e}")
         
         print(f"세션 발급 완료: {user.name}(Level {user.role_level}) 로그인")
         return jsonify({"success": True, "message": f"{user.name}님, 환영합니다!"}), 200

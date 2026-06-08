@@ -196,6 +196,9 @@ def leave_club_10():
         session.clear()
         return jsonify({"success": False, "message": "사용자 정보를 찾을 수 없습니다."}), 401
 
+    if user.role_level >= 40:
+        return jsonify({"success": False, "message": "권한 40 이상 사용자는 탈퇴 기능을 사용할 수 없습니다."}), 403
+
     if user.role_level == 0 or user.belonging_club == 'N':
         return jsonify({"success": False, "message": "소속된 동아리가 없습니다."}), 400
     if user.role_level >= 30:
@@ -239,10 +242,12 @@ def change_info():
     # 권한 확인: 로그인, 사용자 DB 확인
 
     is_verified = session.get('change_info_verified', False)
+    clubs = Club.query.order_by(Club.name.asc()).all()
+    club_names = [club.name for club in clubs]
 
     #일단 get요청수행
     if request.method == 'GET':
-        return render_template('change_info.html', user=user, verified=is_verified)
+        return render_template('change_info.html', user=user, verified=is_verified, club_names=club_names)
 
     # 정보 수정 진입 전 비밀번호 재확인
     if not is_verified:
@@ -262,6 +267,7 @@ def change_info():
     address = request.form.get('address', '').strip()
     email = request.form.get('email', '').strip()
     off_raw = request.form.get('off', '0').strip()
+    belonging_club_raw = request.form.get('belonging_club', '').strip()
 
     if not (age_raw.isdigit() and grade_raw.isdigit() and admission_year_raw.isdigit() and off_raw in ('0', '1')):
         return jsonify({"success": False, "message": "나이/학년/입학년도/휴학여부 값이 올바르지 않습니다."}), 400
@@ -275,6 +281,13 @@ def change_info():
         user.address = address
         user.email = email
         user.off = int(off_raw)
+
+        if user.role_level >= 40:
+            if not belonging_club_raw:
+                return jsonify({"success": False, "message": "동아리 값을 입력하세요."}), 400
+            if belonging_club_raw != 'N' and belonging_club_raw not in club_names:
+                return jsonify({"success": False, "message": "유효하지 않은 동아리 값입니다."}), 400
+            user.belonging_club = belonging_club_raw
         
         db.session.commit()
         session.pop('change_info_verified', None)
