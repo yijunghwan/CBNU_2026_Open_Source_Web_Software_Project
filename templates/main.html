@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동아리 통합 게시판 - 홀로그램 에디션</title>
-    <link rel="stylesheet" href="/static/main_page.css">
+    <link rel="stylesheet" href="/static/mainPage_/main.css">
 </head>
 
 <body>
@@ -14,7 +14,6 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <!-- 이정환이 고친 부분: 메인페이지에도 공통 네비게이션바를 넣었습니다. -->
     {% include '_navbar.html' %}
 
     <div id="hero-section">
@@ -39,10 +38,6 @@
                 <li>
                     <a class="board-link" href="{{ url_for('board.board_post', post_id=post.id) }}">
                         <span class="board-title">{{ post.title }}</span>
-                        <span class="board-meta">
-                            <span>{{ post.club_name }}</span>
-                            <span>{{ post.author.name if post.author else 'unknown' }}</span>
-                        </span>
                     </a>
                 </li>
                 {% else %}
@@ -65,10 +60,8 @@
         </div>
     </div>
 
-    <<<<<<< HEAD=======<!-- 3D 구현을 위해 외부 라이브러리인 Three.js를 불러옵니다. -->
-        >>>>>>> 2138e830dbd2a5f06623a71c3e3c5358493d34f2
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script src="/static/main_page.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="/static/mainPage_/main.js"></script>
 </body>
 
 </html>

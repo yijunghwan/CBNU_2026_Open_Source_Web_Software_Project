@@ -1,0 +1,392 @@
+/* =========================================
+           [1. 기본 설정 및 커스텀 커서]
+           main.html과 동일한 커서 스타일을 적용합니다.
+        ========================================= */
+* {
+    cursor: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #050505;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    color: #eee;
+    overflow: hidden;
+    /* 로그인 페이지는 스크롤 없이 한 화면에 꽉 차게 */
+    height: 100vh;
+}
+
+/* =========================================
+           [2. 커스텀 네온 커서 - main.html과 동일]
+        ========================================= */
+.cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background-color: #00d4ff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
+}
+
+.cursor-outline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+/* =========================================
+           [3. 네비게이션 바 - main.html과 동일한 글래스모피즘]
+        ========================================= */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 75px;
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+nav .logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #00d4ff, #ff00c8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: none;
+}
+
+nav .menu {
+    display: flex;
+    gap: 40px;
+}
+
+nav .menu a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 600;
+    transition: color 0.3s;
+    position: relative;
+}
+
+nav .menu a:hover {
+    color: #fff;
+}
+
+nav .menu a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background: #00d4ff;
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+nav .menu a:hover::after {
+    width: 100%;
+    box-shadow: 0 0 8px #00d4ff;
+}
+
+nav .menu a.active {
+    color: #00d4ff;
+}
+
+nav .menu a.active::after {
+    width: 100%;
+    box-shadow: 0 0 8px #00d4ff;
+}
+
+/* =========================================
+           [4. 전체 레이아웃 - Three.js 캔버스 + 로그인 카드 오버레이]
+        ========================================= */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+#login-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* =========================================
+           [5. 로그인 카드 - main.html의 .board 스타일을 계승]
+        ========================================= */
+.login-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 50px 45px;
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.75), rgba(10, 10, 10, 0.75));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(0, 212, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+    /* 등장 애니메이션 */
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    animation: cardAppear 0.8s 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes cardAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 카드 상단 로고 + 타이틀 */
+.card-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.card-logo {
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, #00d4ff, #ff00c8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+}
+
+.card-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.75s forwards;
+}
+
+/* 제목 아래 네온 그라데이션 밑줄 - main.html의 .board h2::after 계승 */
+.card-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #00d4ff, #ff00c8);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.7);
+    border-radius: 2px;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+           [6. 폼 요소 스타일]
+        ========================================= */
+.form-group {
+    margin-bottom: 22px;
+    opacity: 0;
+    animation: fadeUp 0.6s forwards;
+}
+
+.form-group:nth-child(1) {
+    animation-delay: 0.9s;
+}
+
+.form-group:nth-child(2) {
+    animation-delay: 1.0s;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.form-group input:focus {
+    border-color: rgba(0, 212, 255, 0.6);
+    background: rgba(0, 212, 255, 0.04);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), 0 0 15px rgba(0, 212, 255, 0.1);
+}
+
+/* =========================================
+           [7. 로그인 버튼 - 네온 그라데이션]
+        ========================================= */
+.btn-login {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00d4ff, #ff00c8);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s;
+
+    opacity: 0;
+    animation: fadeUp 0.6s 1.1s forwards;
+}
+
+/* 버튼 위에 마우스를 올리면 빛나는 hover 레이어 */
+.btn-login::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: left 0.4s ease;
+}
+
+.btn-login:hover::before {
+    left: 100%;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4), 0 0 40px rgba(255, 0, 200, 0.2);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+           [8. 회원가입 링크]
+        ========================================= */
+.card-footer {
+    text-align: center;
+    margin-top: 28px;
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 1.2s forwards;
+}
+
+.card-footer a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.card-footer a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+/* =========================================
+           [9. 에러 메시지]
+        ========================================= */
+.error-msg {
+    display: none;
+    background: rgba(255, 60, 60, 0.1);
+    border: 1px solid rgba(255, 60, 60, 0.3);
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #ff6b6b;
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.error-msg.show {
+    display: block;
+}
+
+/* =========================================
+           [10. 반응형]
+        ========================================= */
+@media (max-width: 480px) {
+    nav {
+        padding: 0 24px;
+    }
+
+    nav .menu {
+        gap: 20px;
+    }
+
+    .login-card {
+        margin: 0 20px;
+        padding: 36px 28px;
+    }
+}
