@@ -1,146 +1,663 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>동아리 관리</title>
+    <style>
+        /* ── 페이지 진입 애니메이션 키프레임 정의 ── */
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 테이블 행이 왼쪽에서 주운히 슬라이드인 */
+        @keyframes rowIn {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #05070d;
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* ── 페이지 헤더 ── */
+        .page-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            animation: fadeInDown 0.5s ease both;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00d4ff, #ff00c8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header-meta {
+            color: #8a93a6;
+            font-size: 0.88rem;
+            display: flex;
+            gap: 16px;
+        }
+
+        /* ── 알림 메시지 ── */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: rgba(255, 45, 117, 0.1);
+            border: 1px solid rgba(255, 45, 117, 0.3);
+            color: #ff8aaa;
+        }
+
+        .alert-success {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+        }
+
+        .alert-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        /* ── 카드 ── */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.7), rgba(15, 15, 15, 0.7));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 28px;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease both;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        /* 카드 3개 순차 등장 */
+        .card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.25s;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(180deg, #00d4ff, #ff00c8);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ── 빈 상태 ── */
+        .empty-state {
+            text-align: center;
+            padding: 32px 0;
+            color: #8a93a6;
+            font-size: 0.9rem;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* ── 테이블 ── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .data-table thead tr {
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .data-table th {
+            padding: 10px 14px;
+            text-align: left;
+            color: #8a93a6;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 12px 14px;
+            color: #ddd;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover td {
+            background: rgba(0, 212, 255, 0.05);
+            transition: background 0.2s;
+        }
+
+        /* 테이블 행 순차 등장 클래스 (JS가 동적으로 animation-delay를 주입) */
+        .data-table tbody tr.row-animate {
+            animation: rowIn 0.35s ease both;
+        }
+
+        /* ── 상태 배지 ── */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-pending {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .badge-done {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* ── 반려 사유 인풋 ── */
+        .reject-input {
+            background-color: #0f1424;
+            border: 1px solid #1c2333;
+            border-radius: 6px;
+            color: #fff;
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+            width: 130px;
+            transition: border-color 0.2s;
+        }
+
+        .reject-input:focus {
+            border-color: rgba(255, 45, 117, 0.5);
+        }
+
+        .reject-input::placeholder {
+            color: #4a5568;
+        }
+
+        /* ── 버튼 ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-approve {
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.35);
+            color: #00d4ff;
+        }
+
+        .btn-approve:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-reject {
+            background: rgba(255, 45, 117, 0.1);
+            border: 1px solid rgba(255, 45, 117, 0.35);
+            color: #ff2d75;
+        }
+
+        .btn-reject:hover {
+            background: rgba(255, 45, 117, 0.18);
+        }
+
+        .btn-promote {
+            background: rgba(178, 140, 255, 0.12);
+            border: 1px solid rgba(178, 140, 255, 0.3);
+            color: #b58cff;
+        }
+
+        .btn-promote:hover {
+            background: rgba(178, 140, 255, 0.2);
+        }
+
+        .btn-promote-president {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+
+        .btn-promote-president:hover {
+            background: rgba(255, 193, 7, 0.18);
+        }
+
+        .btn-large {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 187, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 153, 187, 0.2));
+            box-shadow: 0 0 16px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ── 처리 셀 버튼 그룹 ── */
+        .action-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .reject-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* ── 체크박스 그리드 ── */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(0, 212, 255, 0.05);
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            accent-color: #00d4ff;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            font-size: 0.88rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .memo-text {
+            color: #8a93a6;
+            font-size: 0.82rem;
+            font-style: italic;
+        }
+
+        /* ── 스크롤 가능한 테이블 래퍼 ── */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 2px;
+        }
+    </style>
 </head>
+
 <body data-flash-message="{{ message or '' }}">
     {% set active_page = 'mypage' %}
     {% include '_navbar.html' %}
 
-    <h1>{{ club.name }} 동아리 관리</h1>
-    <p>회장: {{ user.name }} | 현재 인원: {{ member_count }}명</p>
+    <div class="page-container">
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <h1>{{ club.name }} 동아리 관리</h1>
+            <div class="header-meta">
+                <span>👑 회장: {{ user.name }}</span>
+                <span>👥 현재 인원: {{ member_count }}명</span>
+            </div>
+        </div>
 
-    {% if message %}
-        <p>
-            {% if message_type == 'error' %}
-                [오류]
-            {% elif message_type == 'success' %}
-                [완료]
-            {% else %}
-                [알림]
+        <!-- 알림 메시지 -->
+        {% if message %}
+        <div
+            class="alert {% if message_type == 'error' %}alert-error{% elif message_type == 'success' %}alert-success{% else %}alert-info{% endif %}">
+            {% if message_type == 'error' %}⚠️
+            {% elif message_type == 'success' %}✅
+            {% else %}ℹ️
             {% endif %}
             {{ message }}
-        </p>
-    {% endif %}
+        </div>
+        {% endif %}
 
-    <hr>
+        <!-- 가입 신청 내역 카드 -->
+        <div class="card">
+            <div class="card-title">가입 신청 내역</div>
+            {% if applications %}
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>신청자</th>
+                            <th>학번</th>
+                            <th>상태</th>
+                            <th>신청 메모</th>
+                            <th>반려 사유</th>
+                            <th>처리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in applications %}
+                        <tr>
+                            <td>{{ item.applicant.name }}</td>
+                            <td>{{ item.applicant.student_id }}</td>
+                            <td>
+                                {% if item.application.status == 'PENDING' %}
+                                <span class="badge badge-pending">대기중</span>
+                                {% else %}
+                                <span class="badge badge-done">처리완료</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="memo-text">{{ item.application.memo or '—' }}</span>
+                            </td>
+                            <td>
+                                <span class="memo-text">{{ item.application.memo2 or '—' }}</span>
+                            </td>
+                            <td>
+                                {% if item.application.status == 'PENDING' %}
+                                <div class="action-cell">
+                                    <form method="post"
+                                        action="/club/admin/club/application/{{ item.application.id }}/approve">
+                                        <button type="submit" class="btn btn-approve">✅ 승인</button>
+                                    </form>
+                                    <form method="post"
+                                        action="/club/admin/club/application/{{ item.application.id }}/reject">
+                                        <div class="reject-row">
+                                            <input type="text" name="memo2" placeholder="반려 사유" required
+                                                class="reject-input">
+                                            <button type="submit" class="btn btn-reject">반려</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <span style="color: #8a93a6; font-size: 0.82rem;">처리 완료</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>현재 신청 내역이 없습니다.</p>
+            </div>
+            {% endif %}
+        </div>
 
-    <h2>가입 신청 내역</h2>
-    {% if applications %}
-        <table border="1" cellpadding="6" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>신청자</th>
-                    <th>학번</th>
-                    <th>상태</th>
-                    <th>신청 메모</th>
-                    <th>반려 사유</th>
-                    <th>처리</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in applications %}
-                    <tr>
-                        <td>{{ item.applicant.name }}</td>
-                        <td>{{ item.applicant.student_id }}</td>
-                        <td>{{ item.application.status }}</td>
-                        <td>{{ item.application.memo }}</td>
-                        <td>{{ item.application.memo2 }}</td>
-                        <td>
-                            {% if item.application.status == 'PENDING' %}
-                                <form method="post" action="/club/admin/club/application/{{ item.application.id }}/approve">
-                                    <button type="submit">승인</button>
-                                </form>
-                                <form method="post" action="/club/admin/club/application/{{ item.application.id }}/reject">
-                                    <input type="text" name="memo2" placeholder="반려 사유" required>
-                                    <button type="submit">반려</button>
-                                </form>
-                            {% else %}
-                                처리 완료
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>현재 신청 내역이 없습니다.</p>
-    {% endif %}
+        <!-- 동아리원 목록 카드 -->
+        <div class="card">
+            <div class="card-title">동아리원 목록</div>
+            {% if members %}
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>학번</th>
+                            <th>휴대폰</th>
+                            <th>학년</th>
+                            <th>입학년도</th>
+                            <th>재학</th>
+                            <th>권한</th>
+                            <th>동아리</th>
+                            <th>처리</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                        <tr>
+                            <td>
+                                {{ member.name }}
+                                {% if member.id == user.id %}
+                                <span class="badge badge-pending" style="margin-left:4px;">회장</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ member.student_id }}</td>
+                            <td>{{ member.phone }}</td>
+                            <td>{{ member.grade }}</td>
+                            <td>{{ member.admission_year }}</td>
+                            <td>{{ '휴학' if member.off == 1 else '재학' }}</td>
+                            <td>{{ member.role_level }}</td>
+                            <td>{{ member.belonging_club }}</td>
+                            <td>
+                                <div class="action-cell">
+                                    {% if member.id != user.id and member.role_level < 20 %} <form method="post"
+                                        action="/club/admin/club/member/{{ member.id }}/promote/member">
+                                        <button type="submit" class="btn btn-promote">간부 임명</button>
+                                        </form>
+                                        {% endif %}
+                                        {% if member.id != user.id and member.role_level < 30 %} <form method="post"
+                                            action="/club/admin/club/member/{{ member.id }}/promote/president">
+                                            <button type="submit" class="btn btn-promote-president">👑 회장 임명</button>
+                                            </form>
+                                            {% endif %}
+                                            {% if member.id == user.id %}
+                                            <span style="color: #4a5568; font-size: 0.78rem;">—</span>
+                                            {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <p>동아리원이 없습니다.</p>
+            </div>
+            {% endif %}
+        </div>
 
-    <hr>
+        <!-- 엑셀 다운로드 카드 -->
+        <div class="card">
+            <div class="card-title">동아리원 정보 엑셀 다운로드</div>
+            <p style="color: #8a93a6; font-size: 0.88rem; margin-bottom: 20px;">엑셀에 포함할 개인정보 항목을 선택하세요.</p>
+            <form method="post" action="/club/admin/club/export">
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_user_id" name="fields" value="user_id" checked>
+                        <label for="f_user_id">아이디</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_student_id" name="fields" value="student_id" checked>
+                        <label for="f_student_id">학번</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_name" name="fields" value="name" checked>
+                        <label for="f_name">이름</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_age" name="fields" value="age" checked>
+                        <label for="f_age">나이</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_phone" name="fields" value="phone" checked>
+                        <label for="f_phone">휴대폰번호</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_grade" name="fields" value="grade" checked>
+                        <label for="f_grade">학년</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_admission_year" name="fields" value="admission_year" checked>
+                        <label for="f_admission_year">입학년도</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_address" name="fields" value="address" checked>
+                        <label for="f_address">주소</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_email" name="fields" value="email" checked>
+                        <label for="f_email">이메일</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_off" name="fields" value="off" checked>
+                        <label for="f_off">휴학여부</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_role_level" name="fields" value="role_level" checked>
+                        <label for="f_role_level">권한레벨</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="f_belonging_club" name="fields" value="belonging_club" checked>
+                        <label for="f_belonging_club">동아리</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-large btn-download">📥 엑셀 파일 다운로드</button>
+            </form>
+        </div>
+    </div>
 
-    <h2>본인 동아리원 목록</h2>
-    {% if members %}
-        <table border="1" cellpadding="6" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>이름</th>
-                    <th>학번</th>
-                    <th>휴대폰</th>
-                    <th>학년</th>
-                    <th>입학년도</th>
-                    <th>휴학</th>
-                    <th>권한</th>
-                    <th>동아리</th>
-                    <th>처리</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for member in members %}
-                    <tr>
-                        <td>{{ member.name }}{% if member.id == user.id %} (회장){% endif %}</td>
-                        <td>{{ member.student_id }}</td>
-                        <td>{{ member.phone }}</td>
-                        <td>{{ member.grade }}</td>
-                        <td>{{ member.admission_year }}</td>
-                        <td>{{ '휴학' if member.off == 1 else '재학' }}</td>
-                        <td>{{ member.role_level }}</td>
-                        <td>{{ member.belonging_club }}</td>
-                        <td>
-                            {% if member.id != user.id and member.role_level < 20 %}
-                                <form method="post" action="/club/admin/club/member/{{ member.id }}/promote/member">
-                                    <button type="submit">간부 임명</button>
-                                </form>
-                            {% endif %}
-                            {% if member.id != user.id and member.role_level < 30 %}
-                                <form method="post" action="/club/admin/club/member/{{ member.id }}/promote/president">
-                                    <button type="submit">회장 임명</button>
-                                </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>동아리원이 없습니다.</p>
-    {% endif %}
+    <script>
+        /* 알림 메시지 플래시 (기존 로직 유지) */
+        const flashMessage = document.body.dataset.flashMessage;
+        if (flashMessage) {
+            alert(flashMessage);
+        }
 
-    <hr>
-
-    <h2>동아리원 정보 엑셀 다운로드</h2>
-    <p>엑셀에 포함할 개인정보 항목을 선택하세요.</p>
-    <form method="post" action="/club/admin/club/export">
-        <p><label><input type="checkbox" name="fields" value="user_id" checked> 아이디</label></p>
-        <p><label><input type="checkbox" name="fields" value="student_id" checked> 학번</label></p>
-        <p><label><input type="checkbox" name="fields" value="name" checked> 이름</label></p>
-        <p><label><input type="checkbox" name="fields" value="age" checked> 나이</label></p>
-        <p><label><input type="checkbox" name="fields" value="phone" checked> 휴대폰번호</label></p>
-        <p><label><input type="checkbox" name="fields" value="grade" checked> 학년</label></p>
-        <p><label><input type="checkbox" name="fields" value="admission_year" checked> 입학년도</label></p>
-        <p><label><input type="checkbox" name="fields" value="address" checked> 주소</label></p>
-        <p><label><input type="checkbox" name="fields" value="email" checked> 이메일</label></p>
-        <p><label><input type="checkbox" name="fields" value="off" checked> 휴학여부</label></p>
-        <p><label><input type="checkbox" name="fields" value="role_level" checked> 권한레벨</label></p>
-        <p><label><input type="checkbox" name="fields" value="belonging_club" checked> 동아리</label></p>
-        <button type="submit">엑셀 파일 다운로드</button>
-    </form>
+        /* 테이블 행 순차 등장 애니메이션
+           - 모든 tbody tr에 .row-animate 클래스를 주고
+           - 인덱스 기반으로 animation-delay를 0.04초 간격으로 적용 */
+        document.querySelectorAll('.data-table tbody tr').forEach((row, i) => {
+            row.classList.add('row-animate');
+            row.style.animationDelay = (i * 0.04) + 's';
+        });
+    </script>
 </body>
-<script>
-    const flashMessage = document.body.dataset.flashMessage;
-    if (flashMessage) {
-        alert(flashMessage);
-    }
-</script>
+
 </html>

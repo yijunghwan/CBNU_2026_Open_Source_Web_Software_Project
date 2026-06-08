@@ -1,41 +1,269 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><title>마이페이지 (동아리원)</title></head>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 (동아리원)</title>
+    <style>
+        /* ── 페이지 진입 애니메이션 키프레임 정의 ── */
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #05070d;
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* ── 페이지 헤더 ── */
+        .page-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            animation: fadeInDown 0.5s ease both;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00d4ff, #ff00c8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .user-meta {
+            color: #8a93a6;
+            font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+        }
+
+        .user-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .user-meta span::before {
+            content: '•';
+            color: #00d4ff;
+        }
+
+        /* ── 카드 ── */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.7), rgba(15, 15, 15, 0.7));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s ease both;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.35);
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(180deg, #00d4ff, #ff00c8);
+            border-radius: 2px;
+        }
+
+        /* ── 정보 행 ── */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #8a93a6;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* ── 인원 수 강조 ── */
+        .member-count-badge {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 4px 14px;
+            color: #00d4ff;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* ── 버튼 ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: #00d4ff;
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid rgba(255, 45, 117, 0.5);
+            color: #ff2d75;
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 45, 117, 0.1);
+            box-shadow: 0 0 12px rgba(255, 45, 117, 0.3);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
 <body>
     {% set active_page = 'mypage' %}
     {% include '_navbar.html' %}
 
-    <h1>{{ user.name }}님의 마이페이지</h1>
-    <p>DB 고유번호(PK): {{ user.id }} | 아이디: {{ user.user_id }} | 학번: {{ user.student_id }} | 레벨: {{ user.role_level }}</p>
-    <hr>
-    
-    <h2>동아리 소속 정보: {{ user.belonging_club }}</h2>
-    <p>우리 동아리 인원수: {{ count }}명</p>
-    
-    <button type="button" onclick="leaveClub()" style="color: red;">동아리 탈퇴하기</button>
+    <div class="page-container">
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <h1>{{ user.name }}님의 마이페이지</h1>
+            <div class="user-meta">
+                <span>아이디: {{ user.user_id }}</span>
+                <span>학번: {{ user.student_id }}</span>
+                <span>레벨: {{ user.role_level }}</span>
+            </div>
+        </div>
 
-    <hr>
-    <button onclick="location.href='/user/change_info'">내 정보 수정</button>
-    <button onclick="location.href='/auth/logout'">로그아웃</button>
+        <!-- 동아리 소속 카드 -->
+        <div class="card">
+            <div class="card-title">동아리 소속 정보</div>
+            <div class="info-row">
+                <span class="info-label">소속 동아리</span>
+                <span class="info-value">{{ user.belonging_club }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">동아리 인원</span>
+                <span class="member-count-badge">{{ count }}명</span>
+            </div>
+            <div class="action-row">
+                <button class="btn btn-danger" type="button" onclick="leaveClub()">동아리 탈퇴하기</button>
+            </div>
+        </div>
+
+        <!-- 계정 관리 카드 -->
+        <div class="card">
+            <div class="card-title">계정 관리</div>
+            <div class="action-row">
+                <button class="btn btn-outline" onclick="location.href='/user/change_info'">내 정보 수정</button>
+                <button class="btn btn-ghost" onclick="location.href='/auth/logout'">로그아웃</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         function leaveClub() {
-            if(confirm('정말 동아리를 탈퇴하시겠습니까?')) {
-                // 백엔드 API로 POST 요청 발사
-                fetch('/user/leave_club_10', { 
-                    method: 'POST' 
+            if (confirm('정말 동아리를 탈퇴하시겠습니까?')) {
+                fetch('/user/leave_club_10', {
+                    method: 'POST'
                 })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message); // 탈퇴 성공 메시지 알림
-                    if(data.success) {
-                        // 성공하면 새로고침! 
-                        // -> 서버가 다시 권한을 검사해서 비동아리원(0) 화면으로 알아서 쫓아냅니다.
-                        window.location.reload(); 
-                    }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    });
             }
         }
     </script>
 </body>
+
 </html>

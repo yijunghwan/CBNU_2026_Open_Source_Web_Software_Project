@@ -1,66 +1,358 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 정보 수정</title>
+    <style>
+        /* ── 페이지 진입 애니메이션 키프레임 정의 ── */
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 폼 그룹이 왼쪽에서 슬라이드인하는 효과 */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #05070d;
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            color: #eee;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+
+        /* ── 페이지 헤더 ── */
+        .page-header {
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            animation: fadeInDown 0.5s ease both;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #00d4ff, #ff00c8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #8a93a6;
+            font-size: 0.9rem;
+        }
+
+        /* ── 카드 ── */
+        .card {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.7), rgba(15, 15, 15, 0.7));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.5s 0.1s ease both;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.12);
+            border-color: rgba(0, 212, 255, 0.35);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(180deg, #00d4ff, #ff00c8);
+            border-radius: 2px;
+        }
+
+        /* ── 폼 요소 ── */
+        .form-group {
+            margin-bottom: 18px;
+            /* 각 폼 그룹을 왼쪽에서 순차적으로 슬라이드인
+               nth-child을 CSS로 지정하면 코드가 너무 많아져 JS로 처리 */
+            animation: slideInLeft 0.4s ease both;
+        }
+
+        /* 1번째에서 8번째 폼 그룹이 0.05초 간격으로 순차 등장 */
+        .form-group:nth-child(1) {
+            animation-delay: 0.15s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.20s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.25s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.30s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.35s;
+        }
+
+        .form-group:nth-child(6) {
+            animation-delay: 0.40s;
+        }
+
+        .form-group:nth-child(7) {
+            animation-delay: 0.45s;
+        }
+
+        .form-group:nth-child(8) {
+            animation-delay: 0.50s;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #8a93a6;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 46px;
+            background-color: #0f1424;
+            border: 1px solid #1c2333;
+            border-radius: 8px;
+            color: #fff;
+            padding: 0 14px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: #4a5568;
+        }
+
+        .form-group select option {
+            background-color: #0f1424;
+            color: #fff;
+        }
+
+        /* ── 버튼 ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099bb);
+            color: #05070d;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: #00d4ff;
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        /* ── 구분선 ── */
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+            margin: 24px 0;
+        }
+    </style>
 </head>
+
 <body>
     {% set active_page = 'mypage' %}
     {% include '_navbar.html' %}
 
-    <h1>내 정보 수정</h1>
+    <div class="page-container">
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <h1>내 정보 수정</h1>
+            {% if not verified %}
+            <p>정보 수정을 위해 비밀번호를 다시 입력해주세요.</p>
+            {% else %}
+            <p>수정할 정보를 입력한 뒤 저장해주세요.</p>
+            {% endif %}
+        </div>
 
-    {% if not verified %}
-        <p>정보 수정을 위해 비밀번호를 다시 입력해주세요.</p>
-        <form id="verifyForm">
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">확인</button>
-        </form>
-    {% else %}
-        <p>수정할 정보를 입력한 뒤 저장해주세요.</p>
-        <form id="changeForm">
-            <div>
-                <label for="name">이름</label>
-                <input type="text" id="name" name="name" value="{{ user.name }}" required>
-            </div>
-            <div>
-                <label for="age">나이</label>
-                <input type="number" id="age" name="age" value="{{ user.age }}" min="0" required>
-            </div>
-            <div>
-                <label for="phone">휴대폰번호</label>
-                <input type="text" id="phone" name="phone" value="{{ user.phone }}" required>
-            </div>
-            <div>
-                <label for="grade">학년</label>
-                <input type="number" id="grade" name="grade" value="{{ user.grade }}" min="1" max="8" required>
-            </div>
-            <div>
-                <label for="admission_year">입학년도</label>
-                <input type="number" id="admission_year" name="admission_year" value="{{ user.admission_year }}" min="1900" required>
-            </div>
-            <div>
-                <label for="address">주소</label>
-                <input type="text" id="address" name="address" value="{{ user.address }}" required>
-            </div>
-            <div>
-                <label for="email">이메일</label>
-                <input type="email" id="email" name="email" value="{{ user.email }}" required>
-            </div>
-            <div>
-                <label for="off">휴학여부</label>
-                <select id="off" name="off" required>
-                    <option value="0" {% if user.off == 0 %}selected{% endif %}>재학(0)</option>
-                    <option value="1" {% if user.off == 1 %}selected{% endif %}>휴학(1)</option>
-                </select>
-            </div>
-            <button type="submit">저장</button>
-        </form>
-    {% endif %}
+        {% if not verified %}
+        <!-- 비밀번호 확인 카드 -->
+        <div class="card">
+            <div class="card-title">본인 확인</div>
+            <form id="verifyForm">
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" placeholder="현재 비밀번호를 입력하세요" required>
+                </div>
+                <button type="submit" class="btn btn-primary">확인</button>
+            </form>
+        </div>
 
-    <hr>
-    <button type="button" onclick="location.href='/user/mypage'">마이페이지로 돌아가기</button>
+        {% else %}
+        <!-- 정보 수정 카드 -->
+        <div class="card">
+            <div class="card-title">개인 정보</div>
+            <form id="changeForm">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" value="{{ user.name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">나이</label>
+                    <input type="number" id="age" name="age" value="{{ user.age }}" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">휴대폰번호</label>
+                    <input type="text" id="phone" name="phone" value="{{ user.phone }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="grade">학년</label>
+                    <input type="number" id="grade" name="grade" value="{{ user.grade }}" min="1" max="8" required>
+                </div>
+                <div class="form-group">
+                    <label for="admission_year">입학년도</label>
+                    <input type="number" id="admission_year" name="admission_year" value="{{ user.admission_year }}"
+                        min="1900" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">주소</label>
+                    <input type="text" id="address" name="address" value="{{ user.address }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="off">휴학여부</label>
+                    <select id="off" name="off" required>
+                        <option value="0" {% if user.off==0 %}selected{% endif %}>재학</option>
+                        <option value="1" {% if user.off==1 %}selected{% endif %}>휴학</option>
+                    </select>
+                </div>
+
+                <div class="divider"></div>
+
+                <button type="submit" class="btn btn-primary">저장하기</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- 돌아가기 -->
+        <div class="action-row">
+            <button class="btn btn-ghost" type="button" onclick="location.href='/user/mypage'">← 마이페이지로 돌아가기</button>
+        </div>
+    </div>
 
     <script>
         const verifyForm = document.getElementById('verifyForm');
@@ -73,13 +365,13 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    if (data.success) {
-                        window.location.href = data.redirect || '/user/change_info';
-                    }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.href = data.redirect || '/user/change_info';
+                        }
+                    });
             });
         }
 
@@ -93,15 +385,16 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    if (data.success) {
-                        window.location.href = '/user/mypage';
-                    }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.href = '/user/mypage';
+                        }
+                    });
             });
         }
     </script>
 </body>
+
 </html>
