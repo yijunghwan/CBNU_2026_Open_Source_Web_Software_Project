@@ -160,7 +160,8 @@ def login():
     if request.method == 'GET':
         message = request.args.get('message', '')
         message_type = request.args.get('type', 'info')
-        return render_template('login.html', message=message, message_type=message_type)  # 로그인 폼 페이지 렌더링
+        next_url = request.args.get('next', '')
+        return render_template('login.html', message=message, message_type=message_type, next_url=next_url)  # 로그인 폼 페이지 렌더링
     
     input_id = request.form.get('user_id')
     input_pwd = request.form.get('password')
@@ -181,7 +182,14 @@ def login():
                 print(f"[회의실 자동정리 실패] {e}")
         
         print(f"세션 발급 완료: {user.name}(Level {user.role_level}) 로그인")
-        return jsonify({"success": True, "message": f"{user.name}님, 환영합니다!"}), 200
+        next_url = request.form.get('next_url', '').strip()
+        # 외부 도메인 오픈 리다이렉트 방지: 같은 서버 경로만 허용
+        from urllib.parse import urlparse
+        if next_url and urlparse(next_url).netloc == '' and next_url.startswith('/'):
+            redirect_url = next_url
+        else:
+            redirect_url = '/'
+        return jsonify({"success": True, "message": f"{user.name}님, 환영합니다!", "redirect_url": redirect_url}), 200
     else:
         return jsonify({"success": False, "message": "아이디 또는 비밀번호가 올바르지 않습니다."}), 401
     

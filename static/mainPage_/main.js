@@ -135,7 +135,7 @@ for (let i = 0; i < bannerCount; i++) {
     // 배너의 네온 테두리를 만들기 위해 도형의 '모서리 선(Edges)'만 추출합니다.
     const edges = new THREE.EdgesGeometry(geometry);
     const lineMaterial = new THREE.LineBasicMaterial({
-        color: new THREE.Color().setHSL(i / bannerCount, 1, 0.6), // 속살보다 더 밝은 명도(0.6) 부여
+        color: 0xffffff, // 모든 배너 모서리 흰색으로 통일
         linewidth: 2
     });
     const line = new THREE.LineSegments(edges, lineMaterial);

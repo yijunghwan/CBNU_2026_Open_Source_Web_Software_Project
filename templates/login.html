@@ -48,6 +48,9 @@
                 <button type="button" class="btn-login" id="loginBtn" onclick="login()">
                     로그인
                 </button>
+
+                <!-- 이전 페이지 URL 전달용 (nth-child 순서 유지를 위해 맨 끝에 배치) -->
+                <input type="hidden" name="next_url" id="nextUrl" value="{{ next_url }}">
             </form>
 
             <div class="card-footer">

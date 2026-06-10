@@ -132,7 +132,7 @@ function login() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '/user/mypage';
+                window.location.href = data.redirect_url || '/';
             } else {
                 errorMsg.textContent = data.message || '아이디 또는 비밀번호를 확인해주세요.';
                 errorMsg.classList.add('show');
