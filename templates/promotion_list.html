@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='promotion_list.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="board">
+            <div class="header">
+                <div>
+                    <h1>{{ page_title }}</h1>
+                    <p class="info">동아리 공식 홍보글 목록</p>
+                </div>
+                {% if user and user.role_level >= 30 %}
+                    <a class="write-button" href="{{ url_for('promotion.write_post') }}">홍보글 작성</a>
+                {% endif %}
+            </div>
+
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+
+            <hr>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>동아리</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if posts %}
+                        {% for post in posts %}
+                            <tr class="{{ 'important-row' if post.is_notice == 1 else '' }}" onclick="location.href='{{ url_for('promotion.post_detail', post_id=post.id) }}'">
+                                <td>{{ post.id }}</td>
+                                <td>{{ post.club_name }}</td>
+                                <td class="title">{{ post.title }}</td>
+                                <td>{{ post.author.name if post.author else 'unknown' }}</td>
+                                <td>{{ post.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+                        {% for i in range(10 - posts|length) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for i in range(10) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                {% set start_page = ((page - 1) // 5) * 5 + 1 %}
+                {% set end_page = start_page + 4 %}
+                {% if end_page > total_pages %}
+                    {% set end_page = total_pages %}
+                {% endif %}
+
+                {% if page > 1 %}
+                    <a href="{{ request.path }}?page={{ page - 1 }}">‹</a>
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                    <a class="{% if p == page %}active{% endif %}" href="{{ request.path }}?page={{ p }}">{{ p }}</a>
+                {% endfor %}
+
+                {% if page < total_pages %}
+                    <a href="{{ request.path }}?page={{ page + 1 }}">›</a>
+                {% endif %}
+            </div>
+
+            <hr>
+        </div>
+    </div>
+</body>
+</html>

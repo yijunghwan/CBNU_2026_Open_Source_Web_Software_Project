@@ -3,7 +3,7 @@ from config import Config
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import inspect, text
 
-from models import Club, ClubBoard, db
+from models import Club, ClubBoard, promotionBoard, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -15,12 +15,14 @@ from routes.mypage import mypage_bp
 from routes.club import club_bp
 from routes.meeting import meeting_bp
 from routes.board import board_bp
+from routes.promtion import promotion_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(mypage_bp)
 app.register_blueprint(club_bp)
 app.register_blueprint(meeting_bp)
 app.register_blueprint(board_bp)
+app.register_blueprint(promotion_bp)
 
 
 #일종의 전역변수 navbar_clubs를 템플릿에서 사용할 수 있도록 하는 용도 (보안을위해 민감 정보는 넣으면 안됨) 즉 db에서 동아리 목록을 그냥 주는거임 랜딩페이지에서 부터
@@ -43,7 +45,12 @@ def main():
         .all()
     )
     
-    promotion_posts = ()#홍보게시판 글 5개 가져오기
+    promotion_posts = (
+        promotionBoard.query
+        .order_by(promotionBoard.created_at.desc())
+        .limit(5)
+        .all()
+    )  # 홍보게시판 글 5개 가져오기
     return render_template('main.html', public_posts=public_posts, promotion_posts=promotion_posts)
 
 if __name__ == '__main__':

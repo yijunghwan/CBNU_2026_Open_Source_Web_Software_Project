@@ -16,3 +16,9 @@ class promotionBoard(db.Model):
     # 소속 동아리
     club_name = db.Column(db.String(50), nullable=False)
 
+    # 공지 여부
+    is_notice = db.Column(db.Integer, default=0, nullable=False)
+
+    # 작성자 관계
+    author = db.relationship('User', backref=db.backref('promotion_posts', lazy=True))
+

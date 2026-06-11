@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='promotion_post.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="post">
+            <div class="header">
+                <h1>{{ post.title }}</h1>
+                {% if message %}
+                    <p>[알림] {{ message }}</p>
+                {% endif %}
+            </div>
+
+            <div class="info">
+                <div class="info-left">
+                    <p>게시판: 홍보게시판</p>
+                    <p>작성자: {{ post.author.name if post.author else 'unknown' }}</p>
+                    <p>작성일: {{ post.created_at }}</p>
+                </div>
+                {% if user and user.role_level >= 30 %}
+                    <form method="post" action="{{ url_for('promotion.delete_post', post_id=post.id) }}" onsubmit="return confirm('이 홍보글을 삭제하시겠습니까?');">
+                        <button type="submit" class="edit-link">글 삭제하기</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <hr>
+
+            <div class="content">{{ post.content }}</div>
+
+            <hr>
+
+            <div class="link">
+                <a href="{{ url_for('promotion.list_posts') }}">홍보게시판 목록으로</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
