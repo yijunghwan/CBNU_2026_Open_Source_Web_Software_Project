@@ -9,7 +9,7 @@ class Club(db.Model):
         db.Text,
         nullable=False,
         default='[]'
-    )
+    )#동아리별 게시글 유형 리스트 여기에 있는거 기준으로 해당도아리의 게시글 작성시 유형 선택할수 있게함
 
     @classmethod
     def find_by_name(cls, club_name):

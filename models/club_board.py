@@ -1,6 +1,7 @@
 from datetime import datetime
 from models import db
 
+#동아리 게시판 db
 class ClubBoard(db.Model):
     __tablename__ = 'club_board'
 
@@ -8,7 +9,7 @@ class ClubBoard(db.Model):
 
     # 제목 및 내용
     title = db.Column(db.String(150), nullable=False)
-    content = db.Column(db.Text, nullable=False)  # HTML 포함 가능하도록 Text 타입 사용
+    content = db.Column(db.Text, nullable=False)  # HTML 포함 가능하도록 Text 타입 사용(이미지 넣으려면 이렇게 해야한다함)-> 근디 HTML말고 그냥 평문 텍스트만 적을듯
 
     # 작성자 (users.id 외래키)
     author_pk = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -29,7 +30,7 @@ class ClubBoard(db.Model):
     post_type = db.Column(db.String(20), default='', nullable=False)
 
     # 관계 정의: post.author.name 으로 작성자 접근 가능
-    author = db.relationship('User', backref=db.backref('posts', lazy=True))
+    author = db.relationship('User', backref=db.backref('posts', lazy=True))#관계형 데이터 베이스 처음써봄 대충 user 
 
     # 댓글 관계: post.comments 로 댓글 목록 접근 가능
     comments = db.relationship('Comment', backref=db.backref('post', lazy=True), lazy=True, cascade='all, delete-orphan')#댓글이라 cascade='all, delete-orphan'로 같이 삭제됨

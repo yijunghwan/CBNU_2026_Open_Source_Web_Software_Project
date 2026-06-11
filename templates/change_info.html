@@ -341,6 +341,18 @@
                     </select>
                 </div>
 
+                {% if user.role_level >= 40 %}
+                <div class="form-group">
+                    <label for="belonging_club">소속 동아리 (관리자 전용)</label>
+                    <select id="belonging_club" name="belonging_club" required>
+                        <option value="N" {% if user.belonging_club == 'N' %}selected{% endif %}>N (미소속)</option>
+                        {% for club_name in club_names %}
+                        <option value="{{ club_name }}" {% if user.belonging_club == club_name %}selected{% endif %}>{{ club_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+
                 <div class="divider"></div>
 
                 <button type="submit" class="btn btn-primary">저장하기</button>

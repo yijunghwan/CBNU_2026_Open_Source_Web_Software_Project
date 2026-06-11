@@ -12,21 +12,14 @@
 
 <body>
 
+    {% set active_page = 'mypage' %}
+    {% include '_navbar.html' %}
+
+
     <!-- 커스텀 커서 - login.html과 동일 -->
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <!-- 네비게이션 바 - login.html과 동일 -->
-    <nav>
-        <a href="/" class="logo">ALL IN ONE</a>
-        <div class="menu">
-            <a href="/">홈</a>
-            <a href="{{ url_for('auth.login') }}">로그인</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">게시판</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">회의실</a>
-            <a href="#" onclick="alert('로그인 후 이용해주세요.')">마이페이지</a>
-        </div>
-    </nav>
 
     <!-- Three.js 파티클 배경 -->
     <div id="canvas-container"></div>
