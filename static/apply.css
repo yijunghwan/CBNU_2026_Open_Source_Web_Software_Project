@@ -1,0 +1,10 @@
+@import url('/static/board_write.css');
+
+.content textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+.check-area {
+    justify-content: flex-start;
+}

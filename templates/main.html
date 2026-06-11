@@ -53,10 +53,19 @@
         <div class="board">
             <h2>홍보게시판</h2>
             <ul class="board-list">
-                <li><span>홍보 게시판은 아직 준비중입니다.</span></li>
-                <li><span>추후 동아리 홍보글을 별도 영역으로 분리할 예정입니다.</span></li>
-                <li><span>현재는 공용게시판만 /board/all 데이터로 연결됩니다.</span></li>
+                {% for post in promotion_posts %}
+                <li>
+                    <a class="board-link" href="{{ url_for('promotion.post_detail', post_id=post.id) }}">
+                        <span class="board-title">[{{ post.club_name }}] {{ post.title }}</span>
+                    </a>
+                </li>
+                {% else %}
+                <li><span>홍보 게시글이 없습니다.</span></li>
+                {% endfor %}
             </ul>
+            <div style="margin-top: 18px;">
+                <a href="{{ url_for('promotion.list_posts') }}" style="color: #00d4ff; text-decoration: none;">전체 홍보게시판 보기</a>
+            </div>
         </div>
     </div>
 
