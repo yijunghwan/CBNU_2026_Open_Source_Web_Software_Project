@@ -39,7 +39,7 @@
                 <tbody>
                     {% if posts %}
                         {% for post in posts %}
-                            <tr class="{{ 'important-row' if post.is_notice == 1 else '' }}" onclick="location.href='{{ url_for('promotion.post_detail', post_id=post.id) }}'">
+                            <tr onclick="location.href='{{ url_for('promotion.post_detail', post_id=post.id) }}'">
                                 <td>{{ post.id }}</td>
                                 <td>{{ post.club_name }}</td>
                                 <td class="title">{{ post.title }}</td>
@@ -47,7 +47,7 @@
                                 <td>{{ post.created_at }}</td>
                             </tr>
                         {% endfor %}
-                        {% for i in range(10 - posts|length) %}
+                        {% for i in range(per_page - posts|length) %}
                             <tr class="empty-row">
                                 <td>&nbsp;</td>
                                 <td></td>
@@ -57,7 +57,7 @@
                             </tr>
                         {% endfor %}
                     {% else %}
-                        {% for i in range(10) %}
+                        {% for i in range(per_page) %}
                             <tr class="empty-row">
                                 <td>&nbsp;</td>
                                 <td></td>

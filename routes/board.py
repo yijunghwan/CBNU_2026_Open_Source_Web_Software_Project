@@ -6,6 +6,7 @@ from flask import render_template, redirect, url_for
 from models import db, User, Club, ClubBoard, Comment
 
 board_bp = Blueprint('board', __name__, url_prefix='/board')
+BOARD_LIST_PER_PAGE = 20
 
 
 def _get_filter_type():
@@ -60,7 +61,7 @@ def _apply_post_type_filter(query, selected_post_type):
 	return query.filter(ClubBoard.post_type == selected_post_type)
 
 
-def _paginate_query(query, page, per_page=10):
+def _paginate_query(query, page, per_page=BOARD_LIST_PER_PAGE):
 	if page < 1:
 		page = 1
 
@@ -83,7 +84,6 @@ def _paginate_query(query, page, per_page=10):
 	return posts, page, total_pages, total
 
 
-@board_bp.route('/myClub', methods=['GET'])
 @board_bp.route('/myclub', methods=['GET'])
 def myclub():
 	user = _get_login_user()
@@ -103,6 +103,7 @@ def myclub():
 			available_post_types=[],
 			selected_post_type=selected_post_type,
 			posts=[],
+			per_page=BOARD_LIST_PER_PAGE,
 			page=1,
 			total_pages=1,
 			total_posts=0,
@@ -130,6 +131,7 @@ def myclub():
 		available_post_types=available_post_types,
 		selected_post_type=selected_post_type,
 		posts=posts,
+		per_page=BOARD_LIST_PER_PAGE,
 		page=page,
 		total_pages=total_pages,
 		total_posts=total_posts,
@@ -159,7 +161,7 @@ def board_post(post_id):
     )
 
     comments, comment_page, comment_total_pages, comment_total = (
-        _paginate_query(comments_query, comment_page, per_page=10)
+		_paginate_query(comments_query, comment_page)
     )
 
     return render_template(
@@ -181,17 +183,24 @@ def my_posts():
 	if not user:
 		return redirect(url_for('auth.login', message='로그인이 필요합니다.', type='error'))
 
-	posts = (
+	page = request.args.get('page', 1, type=int)
+
+	posts_query = (
 		ClubBoard.query
 		.filter_by(author_pk=user.id)
-		.order_by(ClubBoard.created_at.desc())
-		.all()
+		.order_by(ClubBoard.is_notice.desc(), ClubBoard.created_at.desc())
 	)
+
+	posts, page, total_pages, total_posts = _paginate_query(posts_query, page)
 
 	return render_template(
 		'board_my_posts.html',
 		user=user,
 		posts=posts,
+		per_page=BOARD_LIST_PER_PAGE,
+		page=page,
+		total_pages=total_pages,
+		total_posts=total_posts,
 		message=request.args.get('message', ''),
 		message_type=request.args.get('type', 'info')
 	)
@@ -231,6 +240,7 @@ def anterclub(club_name):
 		available_post_types=available_post_types,
 		selected_post_type=selected_post_type,
 		posts=posts,
+		per_page=BOARD_LIST_PER_PAGE,
 		page=page,
 		total_pages=total_pages,
 		total_posts=total_posts,
@@ -273,6 +283,7 @@ def all_board():
 		available_post_types=available_post_types,
 		selected_post_type=selected_post_type,
 		posts=posts,
+		per_page=BOARD_LIST_PER_PAGE,
 		page=page,
 		total_pages=total_pages,
 		total_posts=total_posts,

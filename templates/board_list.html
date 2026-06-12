@@ -74,7 +74,7 @@
                                     {% if post.is_notice == 1 %}
                                         공지
                                     {% else %}
-                                        {{ total_posts - ((page - 1) * 10 + loop.index0) }}
+                                        {{ total_posts - ((page - 1) * per_page + loop.index0) }}
                                     {% endif %}
                                 </td>
 
@@ -96,7 +96,7 @@
                             </tr>
                         {% endfor %}
 
-                        {% for i in range(10 - posts|length) %}
+                        {% for i in range(per_page - posts|length) %}
                             <tr class="empty-row">
                                 <td>&nbsp;</td>
                                 <td></td>
@@ -107,7 +107,7 @@
                             </tr>
                         {% endfor %}
                     {% else %}
-                        {% for i in range(10) %}
+                        {% for i in range(per_page) %}
                             <tr class="empty-row">
                                 <td>&nbsp;</td>
                                 <td></td>

@@ -2,36 +2,115 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>내가 쓴 글 관리</title>
+    <title>내가 쓴 글</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='board_list.css') }}">
 </head>
 <body>
-    {% set active_page = 'mypage' %}
     {% include '_navbar.html' %}
 
-    <h1>{{ user.name }}님의 글 관리</h1>
+    <div class="layout">
+        <div class="board">
+            <div class="header">
+                <div>
+                    <h1>내가 쓴 글</h1>
+                    <p class="info">작성자: {{ user.name }} | 전체 글 수: {{ total_posts }}</p>
+                </div>
+                <a class="write-button" href="{{ url_for('board.write_post') }}">글쓰기</a>
+            </div>
 
-    {% if message %}
-        <p>
-            {% if message_type == 'error' %}[오류]{% elif message_type == 'success' %}[완료]{% else %}[알림]{% endif %}
-            {{ message }}
-        </p>
-    {% endif %}
+            {% if message %}
+                <p class="message">
+                    {% if message_type == 'error' %}[오류]{% elif message_type == 'success' %}[완료]{% else %}[알림]{% endif %}
+                    {{ message }}
+                </p>
+            {% endif %}
 
-    {% if posts %}
-        <ul>
-            {% for post in posts %}
-                <li>
-                    <a href="{{ url_for('board.board_post', post_id=post.id) }}">{{ post.title }}</a>
-                    | club={{ post.club_name }}
-                    | notice={{ post.is_notice }}
-                    | created={{ post.created_at }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>작성한 글이 없습니다.</p>
-    {% endif %}
+            <hr>
 
-    <p><a href="{{ url_for('mypage.my_page') }}">마이페이지로 돌아가기</a></p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>분류</th>
+                        <th>제목</th>
+                        <th>동아리</th>
+                        <th>공개</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if posts %}
+                        {% for post in posts %}
+                            <tr class="{{ 'important-row' if post.is_notice == 1 else '' }}" onclick="location.href='{{ url_for('board.board_post', post_id=post.id) }}'">
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ total_posts - ((page - 1) * per_page + loop.index0) }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ post.post_type if post.post_type else '자유' }}
+                                    {% endif %}
+                                </td>
+                                <td class="title">{{ post.title }}</td>
+                                <td>{{ post.club_name }}</td>
+                                <td>{{ '공개' if post.is_public == 1 else '비공개' }}</td>
+                                <td>{{ post.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for i in range(per_page - posts|length) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for i in range(per_page) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                {% set start_page = ((page - 1) // 5) * 5 + 1 %}
+                {% set end_page = start_page + 4 %}
+
+                {% if end_page > total_pages %}
+                    {% set end_page = total_pages %}
+                {% endif %}
+
+                {% if page > 1 %}
+                    <a href="{{ request.path }}?page={{ page - 1 }}">‹</a>
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                    <a class="{% if p == page %}active{% endif %}" href="{{ request.path }}?page={{ p }}">{{ p }}</a>
+                {% endfor %}
+
+                {% if page < total_pages %}
+                    <a href="{{ request.path }}?page={{ page + 1 }}">›</a>
+                {% endif %}
+            </div>
+
+            <hr>
+        </div>
+    </div>
 </body>
 </html>

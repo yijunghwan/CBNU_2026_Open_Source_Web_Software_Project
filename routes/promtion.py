@@ -5,6 +5,7 @@ from models import db, User, promotionBoard
 
 
 promotion_bp = Blueprint('promotion', __name__, url_prefix='/promotion')
+PROMOTION_LIST_PER_PAGE = 20
 
 def _get_login_user():
     login_user_id = session.get('id')
@@ -26,11 +27,11 @@ def list_posts():
 
     posts_query = (
         promotionBoard.query
-        .order_by(promotionBoard.is_notice.desc(), promotionBoard.created_at.desc())
+        .order_by(promotionBoard.created_at.desc())
     )
 
     total_posts = posts_query.count()
-    per_page = 10
+    per_page = PROMOTION_LIST_PER_PAGE
     total_pages = (total_posts + per_page - 1) // per_page
     if total_pages < 1:
         total_pages = 1
@@ -49,6 +50,7 @@ def list_posts():
         page_title='홍보게시판',
         user=user,
         posts=posts,
+        per_page=PROMOTION_LIST_PER_PAGE,
         page=page,
         total_pages=total_pages,
         total_posts=total_posts,
@@ -71,19 +73,15 @@ def write_post():
 
     title = str((request.form.get('title') or '')).strip()
     content = str((request.form.get('content') or '')).strip()
-    is_notice_raw = request.form.get('is_notice', '0')
-
     if not title or not content:
         return redirect(url_for('promotion.write_post', message='제목과 내용을 모두 입력하세요.'))
-
-    is_notice = 1 if str(is_notice_raw) == '1' else 0
 
     new_post = promotionBoard(
         title=title,
         content=content,
         author_pk=user.id,
         club_name=user.belonging_club or 'N',
-        is_notice=is_notice,
+        is_notice=0,
     )
 
     try:

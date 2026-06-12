@@ -1,4 +1,25 @@
 applicant_id,target_club,status,memo
-guest_1,EMSYS,PENDING,열심히 하겠습니다!
-guest_2,RCV,PENDING,RCV에 꼭 들어가고 싶습니다.
-guest_3,GDSC,PENDING,개발을 배우고 싶습니다.
+guest_001,CUVIX,PENDING,I can attend weekly sessions.
+guest_002,EMsys,PENDING,I want project experience.
+guest_003,G Dev F.C,PENDING,I am interested in team activities.
+guest_004,Next.Net,PENDING,I can contribute to events and operations.
+guest_005,NOVA,PENDING,I can attend weekly sessions.
+guest_006,PDA,PENDING,I want project experience.
+guest_007,SAMMura,PENDING,I am interested in team activities.
+guest_008,TUX,PENDING,I can contribute to events and operations.
+guest_009,CUVIX,PENDING,I can attend weekly sessions.
+guest_010,EMsys,PENDING,I want project experience.
+guest_011,G Dev F.C,PENDING,I am interested in team activities.
+guest_012,Next.Net,PENDING,I can contribute to events and operations.
+guest_013,NOVA,PENDING,I can attend weekly sessions.
+guest_014,PDA,PENDING,I want project experience.
+guest_015,SAMMura,PENDING,I am interested in team activities.
+guest_016,TUX,PENDING,I can contribute to events and operations.
+guest_017,CUVIX,PENDING,I can attend weekly sessions.
+guest_018,EMsys,PENDING,I want project experience.
+guest_019,G Dev F.C,PENDING,I am interested in team activities.
+guest_020,Next.Net,PENDING,I can contribute to events and operations.
+guest_021,NOVA,REJECTED,Reapply next semester after review.
+guest_022,PDA,REJECTED,Reapply next semester after review.
+guest_023,SAMMura,REJECTED,Reapply next semester after review.
+guest_024,TUX,REJECTED,Reapply next semester after review.
