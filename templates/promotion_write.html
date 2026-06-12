@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='promotion_write.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="write">
+            <div class="header">
+                <h1>홍보글 작성</h1>
+                <p>게시판: 홍보게시판</p>
+            </div>
+
+            {% if message %}
+                <p class="message">[알림] {{ message }}</p>
+            {% endif %}
+
+            <form method="post" action="{{ url_for('promotion.write_post') }}" class="write-area">
+                <div class="title">
+                    <label for="title">제목</label>
+                    <input id="title" name="title" type="text" maxlength="150" required>
+                </div>
+
+                <div class="content">
+                    <label for="content">내용</label>
+                    <textarea id="content" name="content" rows="12" required></textarea>
+                </div>
+
+                <div class="button">
+                    <a href="{{ url_for('promotion.list_posts') }}" class="cancel-button">목록으로</a>
+                    <button type="submit" class="submit-button">등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

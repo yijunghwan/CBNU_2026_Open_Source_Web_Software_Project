@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    background-color: #05070d;
+    color: #9ca3af;
+}
+
+a {
+    color: #00e5ff;
+    text-decoration: none;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #1c2333;
+    margin: 24px 0;
+}
+
+.layout {
+    width: 100%;
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.edit {
+    width: 80%;
+    margin: 0 auto;
+    padding: 28px;
+    background-color: #0b0f1a;
+    border: 1px solid #1c2333;
+    border-radius: 10px;
+}
+
+.header h1 {
+    margin: 0 0 10px;
+    color: white;
+    font-size: 28px;
+}
+
+.content textarea{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #05070d;
+    border: 1px solid #1f2a44;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 14px;
+    min-height: 320px;
+    resize: none;
+}
+
+.button {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.right-button {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.right-button form {
+    margin: 0;
+}
+
+.save-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00aaff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: #0094dd;
+}
+
+.delete-button {
+    padding: 10px 20px;
+    border: 1px solid #dc2626;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #dc2626;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: rgba(220, 38, 38, 0.12);
+}
+
+.right-button form {
+    margin: 0;
+    display: flex;
+}
+
+.save-button,
+.delete-button {
+    height: 42px;
+    box-sizing: border-box;
+}

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session, render_template
+from flask import Blueprint, request, jsonify, session, render_template, redirect, url_for
 from datetime import datetime
 
 from models import (
@@ -47,8 +47,11 @@ def get_owner(room_id):
 
 @meeting_bp.route("/", methods=["GET"])
 def meeting_page():
-    return render_template("meeting_room.html")
+    user = get_user()
+    if user is None:
+        return redirect(url_for("auth.login", message="로그인이 필요합니다.", type="error"))
 
+    return render_template("meeting_room.html")
 
 @meeting_bp.route("/create", methods=["POST"])
 def create_meeting_room():

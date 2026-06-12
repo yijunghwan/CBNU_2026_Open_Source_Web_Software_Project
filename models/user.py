@@ -5,7 +5,7 @@ class User(db.Model):
     
     __table_args__ = (
         db.CheckConstraint(
-            "(role_level < 10) OR (belonging_club != 'N')", 
+            "(role_level < 10) OR (belonging_club != 'N') OR (role_level >= 40)", 
             name='check_valid_club_member'
         ),
     )# 혹시 모를 버그 방지용
@@ -17,11 +17,11 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)                
     
     # 인적사항 
-    student_id = db.Column(db.String(20), unique=True, nullable=False)  
-    name = db.Column(db.String(50), nullable=False)                     
-    age = db.Column(db.Integer, default=0, nullable=False)              
-    phone = db.Column(db.String(20), default='N', nullable=False)    
-    grade = db.Column(db.Integer, nullable=False)                      
+    student_id = db.Column(db.String(20), unique=True, nullable=False)  #학번
+    name = db.Column(db.String(50), nullable=False)                     #이름
+    age = db.Column(db.Integer, default=0, nullable=False)              #나이
+    phone = db.Column(db.String(20), default='N', nullable=False)       #전화번호
+    grade = db.Column(db.Integer, nullable=False)                       #
     admission_year = db.Column(db.Integer, default=0, nullable=False)             
     address = db.Column(db.String(255), default='N', nullable=False)                
     email = db.Column(db.String(255), default='N', nullable=False)                  

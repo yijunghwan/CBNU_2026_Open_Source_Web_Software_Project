@@ -1,0 +1,5 @@
+@import url('/static/board_write.css');
+
+.check-area {
+    justify-content: flex-start;
+}

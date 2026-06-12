@@ -12,7 +12,7 @@
     justify-content: space-between;
     padding: 0 50px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-     box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .app-navbar .logo {

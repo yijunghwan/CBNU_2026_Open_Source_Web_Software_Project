@@ -8,6 +8,7 @@ from .club import Club
 from .club_application import ClubApplication
 from .club_board import ClubBoard
 from .club_comment import Comment
+from .promotion_boary import promotionBoard
 
 from .meeting import (
     MeetingRoom,

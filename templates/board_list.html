@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='board_list.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="board">
+
+            <div class="header">
+                <div>
+                    <h1>{{ page_title }}</h1>
+                    <p class="info">scope: {{ scope }} | club: {{ club_name }}</p>
+                </div>
+
+                {% if scope == 'myclub' and club_name != 'N' %}
+                    <a class="write-button" href="{{ url_for('board.write_post') }}">글쓰기</a>
+                {% endif %}
+            </div>
+
+            <div class="filter">
+                <span>필터:</span>
+
+                {% if scope == 'all' %}
+                    <a href="{{ url_for('board.all_board', post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.all_board', post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.all_board', post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% elif scope == 'anotherclub' %}
+                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.anterclub', club_name=club_name, post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% else %}
+                    <a href="{{ url_for('board.myclub', post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.myclub', post_type='free') }}">자유글</a>
+                    {% for item in available_post_types %}
+                        <a href="{{ url_for('board.myclub', post_type=item) }}">{{ item }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <p class="select">현재 선택: {{ selected_post_type }}</p>
+
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+
+            <hr>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>분류</th>
+                        <th>제목</th>
+                        <th>동아리</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if posts %}
+                        {% for post in posts %}
+                            <tr class="{{ 'important-row' if post.is_notice == 1 else '' }}" onclick="location.href='{{ url_for('board.board_post', post_id=post.id) }}'">
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ total_posts - ((page - 1) * per_page + loop.index0) }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if post.is_notice == 1 %}
+                                        공지
+                                    {% else %}
+                                        {{ post.post_type if post.post_type else '자유' }}
+                                    {% endif %}
+                                </td>
+
+                                <td class="title">
+                                    {{ post.title }}
+                                </td>
+
+                                <td>{{ post.club_name }}</td>
+                                <td>{{ post.author.name if post.author else 'unknown' }}</td>
+                                <td>{{ post.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for i in range(per_page - posts|length) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        {% for i in range(per_page) %}
+                            <tr class="empty-row">
+                                <td>&nbsp;</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                {% set start_page = ((page - 1) // 5) * 5 + 1 %}
+                {% set end_page = start_page + 4 %}
+
+                {% if end_page > total_pages %}
+                    {% set end_page = total_pages %}
+                {% endif %}
+
+                {% if page > 1 %}
+                    <a href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ page - 1 }}">‹</a>
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                    <a class="{% if p == page %}active{% endif %}" href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ p }}"> {{ p }} </a>
+                {% endfor %}
+
+                {% if page < total_pages %}
+                    <a href="{{ request.path }}?post_type={{ selected_post_type }}&page={{ page + 1 }}">›</a>
+                {% endif %}
+            </div>
+
+            <hr>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>댓글 수정</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='comment_edit.css') }}">
+</head>
+
+<body>
+    {% include '_navbar.html' %}
+
+    <div class="layout">
+        <div class="edit">
+            <div class="header">
+                <h1>댓글 수정</h1>
+            </div>
+
+            {% if message %}
+            <p class="message">
+                {% if message_type == 'error' %}[오류]{% elif message_type == 'success' %}[완료]{% else %}[알림]{% endif %}
+                {{ message }}
+            </p>
+            {% endif %}
+
+            <hr>
+
+            <form id="edit-form"
+                  class="content"
+                  method="post"
+                  action="{{ url_for('board.edit_comment', Comment_id=comment.id) }}">
+                <textarea name="content" rows="5" required>{{ comment.content }}</textarea>
+            </form>
+
+            <div class="button">
+                <a class="cancel-button" href="{{ url_for('board.board_post', post_id=comment.post_id) }}">
+                    게시글로 돌아가기
+                </a>
+
+                <div class="right-button">
+                    <form method="post" action="{{ url_for('board.delete_comment', Comment_id=comment.id) }}" onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
+                        <button class="delete-button" type="submit">
+                            댓글 삭제
+                        </button>
+                    </form>
+
+                    <button class="save-button" type="submit" form="edit-form">
+                        댓글 수정 저장
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

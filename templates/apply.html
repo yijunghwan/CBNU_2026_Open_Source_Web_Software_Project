@@ -3,32 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>동아리 가입 신청</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='apply.css') }}">
 </head>
 <body>
     {% set active_page = 'mypage' %}
     {% include '_navbar.html' %}
-    <h1>동아리 가입 신청서</h1>
-    <p>환영합니다, <strong>{{ user.name }}</strong>님! 지원하실 동아리를 선택하고 각오를 남겨주세요.</p>
-    
-    <hr>
+    <div class="layout">
+        <div class="write">
+            <div class="header">
+                <h1>동아리 가입 신청서</h1>
+                <p>환영합니다, {{ user.name }}님! 지원할 동아리를 선택하고 각오를 남겨주세요.</p>
+            </div>
 
-    <form id="applyForm">
-        <p>1. 지원할 동아리를 선택하세요:</p>
-        <select name="club_id" id="club_id">
-            {% for club in clubs %}
-                <option value="{{ club.id }}">{{ club.name }}</option>
-            {% endfor %}
-        </select>
+            <form id="applyForm" class="write-area">
+                <div class="select">
+                    <label for="club_id">지원할 동아리</label>
+                    <select name="club_id" id="club_id" required>
+                        {% for club in clubs %}
+                            <option value="{{ club.id }}">{{ club.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <br><br>
+                <div class="content">
+                    <label for="memo">회장님께 남길 코멘트 (가입 동기/각오)</label>
+                    <textarea name="memo" id="memo" placeholder="예: 열심히 활동하겠습니다!" required></textarea>
+                </div>
 
-        <p>2. 회장님께 남길 코멘트 (가입 동기, 각오 등):</p>
-        <input type="text" name="memo" id="memo" style="width: 400px;" placeholder="예: 열심히 코딩하겠습니다!">
-
-        <br><br>
-
-        <button type="button" onclick="submitApplication()">가입 신청서 제출하기</button>
-    </form>
+                <div class="button">
+                    <a href="/user/mypage" class="cancel-button">돌아가기</a>
+                    <button type="button" class="submit-button" onclick="submitApplication()">가입 신청서 제출하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         function submitApplication() {
@@ -47,7 +55,5 @@
         }
     </script>
     
-    <br>
-    <button onclick="location.href='/user/mypage'">돌아가기</button>
 </body>
 </html>

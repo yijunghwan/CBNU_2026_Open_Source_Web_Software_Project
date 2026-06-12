@@ -1,0 +1,11 @@
+@import url('/static/board_post.css');
+
+.info form {
+    margin: 0;
+}
+
+.edit-link {
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
