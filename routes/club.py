@@ -346,6 +346,41 @@ def promote_member(user_pk):
     except Exception:
         db.session.rollback()
         return _redirect_with_message("간부 임명 중 오류가 발생했습니다.", 'error')
+    
+    
+# 동아리원을 일반 회원으로 강등 처리
+@club_bp.route('/admin/club/member/<int:user_pk>/demote', methods=['POST'])
+def demote_member(user_pk):
+    user_id = session.get('id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.filter_by(user_id=user_id).first()
+    if not user:
+        session.clear()
+        return redirect(url_for('auth.login'))
+
+    if user.role_level < 30:
+        return _redirect_with_message("회장만 접근할 수 있습니다.", 'error')
+    # ----------------------------------------
+    # 권한 확인: 로그인, 사용자 DB, 회장 확인
+
+    target_user = User.query.get(user_pk)
+    if not target_user:
+        return _redirect_with_message("대상 사용자를 찾을 수 없습니다.", 'error')
+    if target_user.belonging_club != user.belonging_club:
+        return _redirect_with_message("같은 동아리원만 변경할 수 있습니다.", 'error')
+    if target_user.role_level >= 40:
+        return _redirect_with_message("권한 40 사용자는 일반 회원으로 변경할 수 없습니다.", 'error')
+
+    try:
+        target_user.role_level = 10
+        db.session.commit()
+        return _redirect_with_message(f"{target_user.name}님이 일반 회원으로 강등되었습니다.", 'success')
+    except Exception:
+        db.session.rollback()
+        return _redirect_with_message("강등 처리 중 오류가 발생했습니다.", 'error')
+
 
 
 # 동아리원을 회장으로 위임 처리

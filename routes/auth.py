@@ -5,6 +5,8 @@ from datetime import datetime
 from models import db, User, ClubApplication, Club, MeetingRoom, MeetingRoomMember, MeetingRoomInvite
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth') #'auth' 네임스페이스 정의 (이 파일의 모든 주소 앞에 자동으로 /auth가 붙음)
+#해당 파일은 회원가입 로그아웃 로그인 담당 라우터 입니다.
+#로그인후 세션에 유저 db의 pk를 받는 방식입니다.
 
 #Ai작성
 
@@ -94,7 +96,7 @@ def _sync_executive_meeting_room(login_user):
 
     db.session.commit()
 
-#ai작성 끝 -> 이거 솔직히 회의실이 저의 담당파트가 아니라 ai 썻습니다 관리자가 로그인시 강제로 회장단 조교단 회의실을 강제로 만드는 거입니다.
+#ai작성 끝 ->회의실이 저의 담당파트가 아니라 ai 썻습니다 관리자가 로그인시 강제로 회장단 조교단 회의실을 강제로 만드는 목적입니다.
 
 
 #회원가입 라우터 대충 프론트엔드로부터 post 요청시에 데이터 받아서 
@@ -128,7 +130,7 @@ def register():
     if User.query.filter_by(student_id=student_id).first():
         return jsonify({"success": False, "message": "이미 가입된 학번입니다."}), 400
 
-    # 2. db에 던지기
+    # db에 던지기
     try:
         new_user = User(
             user_id=user_id,

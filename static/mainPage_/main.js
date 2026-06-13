@@ -106,14 +106,14 @@ const bannerImages = [
 
 // 이미지 배열과 순서를 맞춰서 작성하세요
 const bannerURLs = [
-    '/board/cuvic',       // CUVIC 배너 클릭 시 이동할 URL
-    '/board/emsys',       // EMSYS 배너 클릭 시 이동할 URL
-    '/board/gdev',        // G.DEV.FC 배너 클릭 시 이동할 URL
-    '/board/nestnet',     // NEST.NET 배너 클릭 시 이동할 URL
-    '/board/nova',        // NOVA 배너 클릭 시 이동할 URL
-    '/board/pda',         // PDA 배너 클릭 시 이동할 URL
-    '/board/sammaru',     // SAMMaru 배너 클릭 시 이동할 URL
-    '/board/tux',         // TUX 배너 클릭 시 이동할 URL
+    '/board/anotherclub/CUVIX',       // CUVIC 배너 클릭 시 이동할 URL
+    '/board/anotherclub/EMsys',       // EMSYS 배너 클릭 시 이동할 URL
+    '/board/anotherclub/G Dev F.C',        // G.DEV.FC 배너 클릭 시 이동할 URL
+    '/board/anotherclub/Next.Net',     // NEST.NET 배너 클릭 시 이동할 URL
+    '/board/anotherclub/NOVA',        // NOVA 배너 클릭 시 이동할 URL
+    '/board/anotherclub/PDA',         // PDA 배너 클릭 시 이동할 URL
+    '/board/anotherclub/SAMMura',     // SAMMaru 배너 클릭 시 이동할 URL
+    '/board/anotherclub/TUX',         // TUX 배너 클릭 시 이동할 URL
 ];
 
 const textureLoader = new THREE.TextureLoader();
@@ -165,11 +165,26 @@ let targetRotationY = 0; // 목표 좌우 회전값
 let targetRotationX = 0; // 목표 상하 기울기값
 const autoRotateSpeed = 0.002; // 가만히 둬도 자동으로 돌아가는 속도
 
+const getPointerPosition = (e) => {
+    if (e.touches && e.touches.length > 0) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    if (e.changedTouches && e.changedTouches.length > 0) {
+        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    }
+    if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+        return { x: e.clientX, y: e.clientY };
+    }
+    return null;
+};
+
 const onPointerDown = (e) => {
     isDragging = true;
     // 터치(모바일)와 마우스(PC) 모두 호환되도록 좌표를 가져옵니다.
-    previousMouseX = e.clientX || e.touches[0].clientX;
-    previousMouseY = e.clientY || e.touches[0].clientY;
+    const point = getPointerPosition(e);
+    if (!point) return;
+    previousMouseX = point.x;
+    previousMouseY = point.y;
 
     // 클릭해서 드래그 중일 땐 커스텀 커서 테두리가 1.5배 커지며 파랗게 변하게 합니다.
     cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
@@ -177,8 +192,10 @@ const onPointerDown = (e) => {
 };
 const onPointerMove = (e) => {
     if (!isDragging) return; // 드래그 중이 아니면 멈춥니다.
-    const currentX = e.clientX || e.touches[0].clientX;
-    const currentY = e.clientY || e.touches[0].clientY;
+    const point = getPointerPosition(e);
+    if (!point) return;
+    const currentX = point.x;
+    const currentY = point.y;
 
     // 방금 전 마우스 위치와 현재 위치의 차이(이동 거리)를 계산합니다.
     const deltaX = currentX - previousMouseX;
@@ -215,21 +232,13 @@ const mouse = new THREE.Vector2();
 
 // 드래그인지 클릭인지 구분하기 위한 변수
 let mouseDownPos = { x: 0, y: 0 };
+let suppressClickAfterTouch = false;
 
-container.addEventListener('mousedown', (e) => {
-    mouseDownPos = { x: e.clientX, y: e.clientY };
-});
-
-container.addEventListener('click', (e) => {
-    // 마우스가 5px 이상 움직였으면 드래그로 판단 → 이동 안 함
-    const dx = e.clientX - mouseDownPos.x;
-    const dy = e.clientY - mouseDownPos.y;
-    if (Math.sqrt(dx * dx + dy * dy) > 5) return;
-
-    // 캔버스 안에서의 마우스 위치를 -1 ~ 1 범위로 정규화
+const moveToBannerUrl = (clientX, clientY) => {
+    // 캔버스 안에서의 포인터 위치를 -1 ~ 1 범위로 정규화
     const rect = container.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
     // 광선을 쏴서 충돌한 오브젝트 목록을 가져옴
     raycaster.setFromCamera(mouse, camera);
@@ -247,7 +256,46 @@ container.addEventListener('click', (e) => {
             window.location.href = url;  // URL로 이동!
         }
     }
+};
+
+container.addEventListener('mousedown', (e) => {
+    mouseDownPos = { x: e.clientX, y: e.clientY };
 });
+
+container.addEventListener('touchstart', (e) => {
+    const point = getPointerPosition(e);
+    if (!point) return;
+    mouseDownPos = { x: point.x, y: point.y };
+}, { passive: true });
+
+container.addEventListener('click', (e) => {
+    if (suppressClickAfterTouch) return;
+
+    // 마우스가 5px 이상 움직였으면 드래그로 판단 → 이동 안 함
+    const dx = e.clientX - mouseDownPos.x;
+    const dy = e.clientY - mouseDownPos.y;
+    if (Math.sqrt(dx * dx + dy * dy) > 5) return;
+
+    moveToBannerUrl(e.clientX, e.clientY);
+});
+
+container.addEventListener('touchend', (e) => {
+    const point = getPointerPosition(e);
+    if (!point) return;
+
+    // 터치가 조금이라도 이동했으면 드래그로 판단
+    const dx = point.x - mouseDownPos.x;
+    const dy = point.y - mouseDownPos.y;
+    if (Math.sqrt(dx * dx + dy * dy) > 8) return;
+
+    // 모바일에서 click이 이어서 발생하는 경우 중복 이동 방지
+    suppressClickAfterTouch = true;
+    setTimeout(() => {
+        suppressClickAfterTouch = false;
+    }, 350);
+
+    moveToBannerUrl(point.x, point.y);
+}, { passive: true });
 
 
 // 사용자가 브라우저 창 크기를 줄이거나 늘리면, 카메라 비율과 화면 캔버스 크기를 다시 세팅해 찌그러지지 않게 합니다.
