@@ -1,6 +1,4 @@
-/* =========================================
-           [JavaScript 파트 1] 커스텀 커서 로직 - login.html과 동일
-        ========================================= */
+// 커스텀 커서
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 
@@ -20,9 +18,7 @@ document.querySelectorAll('input').forEach(el => {
     el.addEventListener('mouseleave', () => { cursorDot.style.opacity = '1'; });
 });
 
-/* =========================================
-   [JavaScript 파트 2] Three.js 파티클 배경 - login.html과 동일
-========================================= */
+// Three.js 파티클 배경
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x050505, 0.04);
 
@@ -105,10 +101,7 @@ window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
 });
 
-/* =========================================
-   [JavaScript 파트 3] 회원가입 로직
-   ★ 원본 register() 함수 코드를 100% 그대로 유지합니다.
-========================================= */
+// 회원가입
 function register() {
     let form = document.getElementById('registerForm');
     let formData = new FormData(form);

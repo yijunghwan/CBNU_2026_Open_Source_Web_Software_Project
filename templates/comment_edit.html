@@ -28,7 +28,7 @@
             <form id="edit-form"
                   class="content"
                   method="post"
-                  action="{{ url_for('board.edit_comment', Comment_id=comment.id) }}">
+                  action="{{ url_for('board.edit_comment', comment_id=comment.id) }}">
                 <textarea name="content" rows="5" required>{{ comment.content }}</textarea>
             </form>
 
@@ -38,7 +38,7 @@
                 </a>
 
                 <div class="right-button">
-                    <form method="post" action="{{ url_for('board.delete_comment', Comment_id=comment.id) }}" onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?');">
+                    <form method="post" action="{{ url_for('board.delete_comment', comment_id=comment.id) }}" onsubmit="return confirm('정말 이 댓글을 삭제하시겠습니까?')">
                         <button class="delete-button" type="submit">
                             댓글 삭제
                         </button>

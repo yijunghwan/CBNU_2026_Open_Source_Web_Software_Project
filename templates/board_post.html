@@ -34,7 +34,7 @@
                 </div>
                 {% if user and user.id == post.author_pk %}
                     <p>
-                        <a class="edit-link"href="{{ url_for('board.edit_post', Post_id=post.id) }}">글 수정하기</a>
+                        <a class="edit-link"href="{{ url_for('board.edit_post', post_id=post.id) }}">글 수정하기</a>
                     </p>
                 {% endif %}
             </div>
@@ -62,7 +62,7 @@
                                 ({{ comment.created_at }})
                                 </div>
                                 {% if user and user.id == comment.author_pk %}
-                                    <a href="{{ url_for('board.edit_comment', Comment_id=comment.id) }}" class="comment-edit">
+                                    <a href="{{ url_for('board.edit_comment', comment_id=comment.id) }}" class="comment-edit">
                                         수정하기
                                     </a>
                                 {% endif %}
@@ -100,7 +100,7 @@
 
                 <div class="comment-write">
                     <form method="post"
-                          action="{{ url_for('board.write_comment', Post_id=post.id) }}">
+                          action="{{ url_for('board.write_comment', post_id=post.id) }}">
                         <textarea name="content" rows="3" cols="80" placeholder="댓글을 입력하세요." required></textarea>
                         <button type="submit">
                             댓글 작성

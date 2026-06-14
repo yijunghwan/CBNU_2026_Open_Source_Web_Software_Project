@@ -1,7 +1,6 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-        /* ── 키프레임 ── */
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -73,14 +72,12 @@
             min-height: 100vh;
         }
 
-        /* ── 페이지 컨테이너 ── */
         .page-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 56px 32px 80px;
         }
 
-        /* ── 프로필 배너 헤더 ── */
         .page-header {
             position: relative;
             margin-bottom: 48px;
@@ -145,7 +142,6 @@
             font-size: 1rem;
         }
 
-        /* ── 알림 메시지 ── */
         .alert {
             padding: 18px 22px;
             border-radius: 14px;
@@ -175,7 +171,6 @@
             color: #ccc;
         }
 
-        /* ── 카드 공통 ── */
         .card {
             background: linear-gradient(145deg, rgba(20, 22, 35, 0.85), rgba(10, 10, 20, 0.9));
             backdrop-filter: blur(16px);
@@ -195,19 +190,10 @@
             border-color: rgba(0, 212, 255, 0.3);
         }
 
-        .card:nth-child(1) {
-            animation-delay: 0.05s;
-        }
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.15s; }
+        .card:nth-child(3) { animation-delay: 0.25s; }
 
-        .card:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .card:nth-child(3) {
-            animation-delay: 0.25s;
-        }
-
-        /* ── 카드 타이틀 ── */
         .card-title {
             font-size: 1.3rem;
             font-weight: 800;
@@ -229,7 +215,6 @@
             flex-shrink: 0;
         }
 
-        /* ── 빈 상태 ── */
         .empty-state {
             text-align: center;
             padding: 52px 0 36px;
@@ -248,7 +233,6 @@
             line-height: 1.6;
         }
 
-        /* ── 스크롤 가능한 테이블 래퍼 ── */
         .table-wrapper {
             overflow-x: auto;
         }
@@ -266,7 +250,6 @@
             border-radius: 3px;
         }
 
-        /* ── 테이블 ── */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -308,7 +291,6 @@
             animation: rowIn 0.35s ease both;
         }
 
-        /* ── 상태 배지 ── */
         .badge {
             display: inline-flex;
             align-items: center;
@@ -331,7 +313,7 @@
             border: 1px solid rgba(0, 212, 255, 0.25);
         }
 
-        /* ── 반려 사유 인풋 ── */
+
         .reject-input {
             background-color: #0f1424;
             border: 1px solid #1c2333;
@@ -354,7 +336,6 @@
             color: #4a5568;
         }
 
-        /* ── 버튼 공통 ── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -451,7 +432,6 @@
             transform: translateY(-2px);
         }
 
-        /* ── 처리 셀 버튼 그룹 ── */
         .action-cell {
             display: flex;
             flex-direction: column;
@@ -468,7 +448,6 @@
             align-items: center;
         }
 
-        /* ── 체크박스 그리드 ── */
         .checkbox-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));

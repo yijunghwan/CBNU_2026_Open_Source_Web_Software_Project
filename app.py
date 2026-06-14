@@ -55,6 +55,6 @@ def main():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() #대충 db테이블을 만들어주는 역할 models/__init__.py ->여기에 db 객체 있음
+        db.create_all() #대충 db테이블을 만들어주는 역할 models/__init__.py ->여기에 db 객체 있음 단, 테이블이 변해버리는등의 경우는 드랍했다가 다시해야함 따로 수정하거나
         
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001) 

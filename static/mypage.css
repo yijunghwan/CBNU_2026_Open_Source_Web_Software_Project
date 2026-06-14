@@ -34,14 +34,12 @@ body {
     min-height: 100vh;
 }
 
-/* ── 페이지 컨테이너 ── */
 .page-container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 56px 32px 80px;
 }
 
-/* ── 프로필 배너 헤더 ── */
 .page-header {
     position: relative;
     margin-bottom: 48px;
@@ -108,7 +106,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* ── 카드 공통 ── */
 .card {
     background: linear-gradient(145deg, rgba(20, 22, 35, 0.85), rgba(10, 10, 20, 0.9));
     backdrop-filter: blur(16px);
@@ -131,7 +128,6 @@ body {
 .card:nth-child(2) { animation-delay: 0.22s; }
 .card:nth-child(3) { animation-delay: 0.34s; }
 
-/* ── 카드 타이틀 ── */
 .card-title {
     font-size: 1.3rem;
     font-weight: 800;
@@ -152,7 +148,6 @@ body {
     flex-shrink: 0;
 }
 
-/* ── 정보 행 ── */
 .info-row {
     display: flex;
     justify-content: space-between;
@@ -177,7 +172,6 @@ body {
     font-size: 1.05rem;
 }
 
-/* ── 상태 배지 (mypage_0) ── */
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -201,7 +195,6 @@ body {
     border: 1px solid rgba(255, 45, 117, 0.35);
 }
 
-/* ── 빈 상태 (mypage_0) ── */
 .empty-state {
     text-align: center;
     padding: 52px 0 40px;
@@ -220,7 +213,6 @@ body {
     line-height: 1.6;
 }
 
-/* ── 반려 사유 박스 (mypage_0) ── */
 .reject-reason {
     margin-top: 18px;
     padding: 18px 22px;
@@ -234,7 +226,6 @@ body {
 
 .reject-reason strong { color: #ff2d75; }
 
-/* ── 인원 수 배지 (mypage_10, mypage_30) ── */
 .member-count-badge {
     background: rgba(0, 212, 255, 0.1);
     border: 1px solid rgba(0, 212, 255, 0.35);
@@ -245,7 +236,6 @@ body {
     font-weight: 700;
 }
 
-/* ── 회장 크라운 배지 (mypage_30) ── */
 .crown-badge {
     display: inline-flex;
     align-items: center;
@@ -262,7 +252,6 @@ body {
     z-index: 1;
 }
 
-/* ── 관리자 카드 강조 (mypage_30) ── */
 .card.admin-card {
     border-color: rgba(255, 193, 7, 0.3);
     background: linear-gradient(145deg, rgba(40, 32, 10, 0.85), rgba(20, 16, 5, 0.9));
@@ -277,7 +266,6 @@ body {
     background: linear-gradient(180deg, #ffc107, #ff8c00);
 }
 
-/* ── 관리 메뉴 그리드 (mypage_30) ── */
 .admin-menu-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -315,7 +303,6 @@ body {
 .admin-menu-label { font-size: 1rem; font-weight: 700; color: #fff; }
 .admin-menu-desc  { font-size: 0.85rem; color: #8a93a6; line-height: 1.4; }
 
-/* ── 버튼 공통 ── */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -379,7 +366,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* ── 액션 행 ── */
 .action-row {
     display: flex;
     gap: 14px;

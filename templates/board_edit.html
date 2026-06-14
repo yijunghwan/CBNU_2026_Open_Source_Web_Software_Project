@@ -22,7 +22,7 @@
                 </p>
             {% endif %}
 
-            <form method="post" action="{{ url_for('board.edit_post', Post_id=post.id) }}" class="edit-area">
+            <form method="post" action="{{ url_for('board.edit_post', post_id=post.id) }}" class="edit-area">
                 <div class="title">
                     <label for="title">제목</label>
                     <input id="title" name="title" type="text" maxlength="150" value="{{ post.title }}" required>
@@ -72,7 +72,7 @@
 
             <form id="delete-form"
                   method="post"
-                  action="{{ url_for('board.delete_post', Post_id=post.id) }}"
+                  action="{{ url_for('board.delete_post', post_id=post.id) }}"
                   onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
             </form>
 
