@@ -142,7 +142,7 @@ def get_invited_rooms():
                 "room_name": room.room_name,
                 "description": room.description,
                 "invite_id": invite.id,
-                "owner_name": owner.name if owner else "알 수 없음",
+                "owner_name": owner.name,
                 "member_count": len(members),
                 "created_at": room.created_at.strftime("%Y-%m-%d %H:%M"),
                 "invite_status": "대기중",
