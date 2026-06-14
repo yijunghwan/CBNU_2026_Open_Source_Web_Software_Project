@@ -1,4 +1,5 @@
 # CBNU_2026_Open_Source_Web_Software_Project
+<img width="1919" height="940" alt="image" src="https://github.com/user-attachments/assets/aeff955b-d317-430f-b842-d39e1bd1808a" />
 
 ## 프로젝트 기술 스택 정리
 
