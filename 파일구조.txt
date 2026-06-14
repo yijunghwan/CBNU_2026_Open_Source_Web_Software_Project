@@ -1,21 +1,71 @@
+CBNU_2026_Open_Source_Web_Software_Project
 │
-├── app.py              # [Entry Point] 서버를 최종 구동하고 모듈을 조립하는 최상위 파일
-├── config.py           # [Configuration] DB 주소, 포트, 암호화 키 등 시스템 환경설정 변수 관리
+├── app.py              # 서버 구동 및 Blueprint 등록 등 앱 조립 최상위 파일
+├── config.py           # DB 주소, 시크릿 키 등 환경설정 변수
+├── LICENSE
+├── README.md
+├── 파일구조.txt
 │
-├── models/             # [Data Layer] C언어의 구조체 정의처럼 DB 테이블 스키마들을 모아둔 폴더
-│   ├── __init__.py     # 폴더를 파썬 패키지로 인식하게 만드는 초기화 파일
-│   └── user.py         # User 테이블 정의 (기존 class User 코드)
-│
-├── routes/             # [Control Layer] 비즈니스 로직 및 Blueprint 서브 라우터 모음
+├── models/             # DB 테이블 스키마(모델) 정의
 │   ├── __init__.py
-│   ├── auth.py         # 회원가입 / 로그인 처리 라우터 (/register, /login)
+│   ├── user.py             # 회원
+│   ├── club.py             # 동아리
+│   ├── club_application.py # 동아리 가입 신청
+│   ├── club_board.py       # 동아리 게시판
+│   ├── club_comment.py     # 게시판 댓글
+│   ├── meeting.py          # 회의실/미팅
+│   ├── promotion_boary.py  # 홍보 게시판
+│   └── 설명.txt
 │
-├── templates/          # [Presentation Layer - HTML] 서버 사이드 렌더링용 템플릿 파일
-│   ├── index.html      # 메인 화면
-│   ├── login.html      # 로그인 화면
-│   └── register.html   # 회원가입 화면
+├── routes/             # Blueprint 라우터(요청 처리)
+│   ├── auth.py             # 회원가입 / 로그인 (/register, /login)
+│   ├── board.py            # 동아리 게시판 CRUD
+│   ├── club.py             # 동아리 관련 기능
+│   ├── meeting.py          # 회의실 기능
+│   ├── mypage.py           # 마이페이지
+│   ├── promtion.py         # 홍보 게시판
+│   ├── check.py            # 검증/유틸 라우터
+│   └── 설명.txt
 │
-└── static/             # [Presentation Layer - Assets] 브라우저가 다운로드하여 직접 실행하는 정적 파일
-    ├── css/            # 스타일시트 (디자인 변수 및 레이아웃 데이터)
-    ├── js/             # 클라이언트 사이드 스크립트 (이벤트 제어)
-    └── images/         # 로고 및 이미지 리소스
+├── templates/          # Jinja2 HTML 템플릿
+│   ├── _navbar.html
+│   ├── main.html
+│   ├── login.html
+│   ├── register.html
+│   ├── mypage_0.html / mypage_10.html / mypage_30.html
+│   ├── change_info.html
+│   ├── admin_club.html
+│   ├── apply.html
+│   ├── board_list.html / board_write.html / board_post.html / board_edit.html
+│   ├── board_my_posts.html
+│   ├── comment_edit.html
+│   ├── promotion_list.html / promotion_post.html / promotion_write.html
+│   ├── meeting_room.html
+│   └── 설명.txt
+│
+├── static/             # CSS / JS / 이미지 등 정적 리소스
+│   ├── navbar.css / navbar.js          # 공통 네비게이션 바
+│   ├── board_list.css / board_write.css / board_post.css / board_edit.css
+│   ├── comment_edit.css
+│   ├── promotion_list.css / promotion_post.css / promotion_write.css
+│   ├── apply.css
+│   ├── mypage.css / change_info.css / admin.css
+│   ├── meeting_room.css / meeting_room.js
+│   ├── mainPage_/                      # 메인 화면 전용 에셋
+│   │   ├── main.css
+│   │   ├── main.js
+│   │   └── banner_image/               # 배너 이미지
+│   ├── loginPage_/                     # 로그인 화면 전용 에셋
+│   │   ├── login.css
+│   │   └── login.js
+│   ├── registerPage_/                  # 회원가입 화면 전용 에셋
+│   │   ├── register.css
+│   │   └── register.js
+│   └── 설명
+│
+└── test_csv/           # 초기 데이터 시드(CSV) 및 적재 스크립트
+    ├── seed_csv.py
+    ├── users.csv
+    ├── apps.csv
+    ├── boards.csv
+    └── test_csv.txt

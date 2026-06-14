@@ -32,10 +32,10 @@
                         <a href="{{ url_for('board.all_board', post_type=item) }}">{{ item }}</a>
                     {% endfor %}
                 {% elif scope == 'anotherclub' %}
-                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='all') }}">전체보기</a>
-                    <a href="{{ url_for('board.anterclub', club_name=club_name, post_type='free') }}">자유글</a>
+                    <a href="{{ url_for('board.other_club', club_name=club_name, post_type='all') }}">전체보기</a>
+                    <a href="{{ url_for('board.other_club', club_name=club_name, post_type='free') }}">자유글</a>
                     {% for item in available_post_types %}
-                        <a href="{{ url_for('board.anterclub', club_name=club_name, post_type=item) }}">{{ item }}</a>
+                        <a href="{{ url_for('board.other_club', club_name=club_name, post_type=item) }}">{{ item }}</a>
                     {% endfor %}
                 {% else %}
                     <a href="{{ url_for('board.myclub', post_type='all') }}">전체보기</a>

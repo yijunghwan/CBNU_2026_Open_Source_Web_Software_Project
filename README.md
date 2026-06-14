@@ -43,8 +43,42 @@
 - openpyxl
 - cryptography
 
+## 프로젝트 구조
 
+```
+.
+├── app.py              # 앱 진입점, Blueprint 등록
+├── config.py           # DB/시크릿 키 등 환경설정
+├── models/             # SQLAlchemy 모델 (user, club, board, meeting 등)
+├── routes/             # Blueprint 라우터 (auth, board, club, meeting, mypage, promtion, check)
+├── templates/          # Jinja2 HTML 템플릿
+├── static/             # CSS / JS / 이미지
+│   ├── mainPage_/      # 메인 화면 전용 에셋
+│   ├── loginPage_/     # 로그인 화면 전용 에셋
+│   └── registerPage_/  # 회원가입 화면 전용 에셋
+└── test_csv/           # 초기 데이터 시드(CSV) 및 적재 스크립트
+```
 
+자세한 트리는 `파일구조.txt` 참고.
+
+## 실행 방법
+
+```bash
+# 가상환경 (선택)
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
+
+# 의존성 설치
+pip install flask flask-sqlalchemy pymysql openpyxl cryptography
+
+# config.py 의 DB 접속 정보를 환경에 맞게 수정한 뒤 실행
+python app.py
+```
+
+## HTTP 상태 코드
+
+```
 200: 성공
 201: 생성 성공(회원가입처럼 새 리소스 생성)
 400: 잘못된 요청(사용자 입력 오류, 중복 아이디 등)
@@ -52,3 +86,4 @@
 403: 권한 없음
 404: 대상 없음
 500: 서버 내부 오류
+```

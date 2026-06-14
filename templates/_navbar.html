@@ -18,7 +18,7 @@
                 {% if navbar_clubs %}
                 <!-- 반복문 app.py의 전역변수인 navbar_clubs db의 정보를 club에 넣고 돌리기 -->
                 {% for club in navbar_clubs %}
-                <a href="{{ url_for('board.anterclub', club_name=club.name) }}">{{ club.name }}</a>
+                <a href="{{ url_for('board.other_club', club_name=club.name) }}">{{ club.name }}</a>
                 {% endfor %}
                 <div class="dropdown-divider"></div>
                 {% endif %}

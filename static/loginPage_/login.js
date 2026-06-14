@@ -1,6 +1,4 @@
-/* =========================================
-           [JavaScript 파트 1] 커스텀 커서 로직 - main.html과 동일
-        ========================================= */
+// 커스텀 커서
 const cursorDot = document.querySelector('.cursor-dot');
 const cursorOutline = document.querySelector('.cursor-outline');
 
@@ -24,10 +22,7 @@ document.querySelectorAll('input').forEach(el => {
     });
 });
 
-/* =========================================
-   [JavaScript 파트 2] Three.js 파티클 배경
-   main.html의 파티클과 동일하지만 좀 더 잔잔하게 세팅합니다.
-========================================= */
+// Three.js 파티클 배경
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x050505, 0.04);
 
@@ -41,7 +36,7 @@ renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 container.appendChild(renderer.domElement);
 
-/* --- 파티클(별가루) 배경 - main.html과 동일 --- */
+/* 파티클(별가루) 배경 */
 const particlesGeometry = new THREE.BufferGeometry();
 const particlesCount = 1200;
 const posArray = new Float32Array(particlesCount * 3);
@@ -60,7 +55,7 @@ const particlesMaterial = new THREE.PointsMaterial({
 const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
 scene.add(particlesMesh);
 
-/* --- 분홍 보조 파티클 레이어 --- */
+/* 분홍 보조 파티클 */
 const posArray2 = new Float32Array(600 * 3);
 for (let i = 0; i < 600 * 3; i++) posArray2[i] = (Math.random() - 0.5) * 70;
 const geo2 = new THREE.BufferGeometry();
@@ -72,7 +67,7 @@ const mat2 = new THREE.PointsMaterial({
 });
 scene.add(new THREE.Points(geo2, mat2));
 
-/* --- 원형으로 배치된 홀로그램 링 오브젝트 (배경 분위기용) --- */
+/* 홀로그램 링 */
 const ringGroup = new THREE.Group();
 scene.add(ringGroup);
 
@@ -93,7 +88,7 @@ for (let i = 0; i < 8; i++) {
     ringGroup.add(ring);
 }
 
-/* --- 애니메이션 루프 --- */
+/* 애니메이션 루프 */
 const clock = new THREE.Clock();
 function animate() {
     requestAnimationFrame(animate);
@@ -118,9 +113,7 @@ window.addEventListener('resize', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
 });
 
-/* =========================================
-   [JavaScript 파트 3] 로그인 로직 - 기존 코드 유지
-========================================= */
+// 로그인
 function login() {
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.classList.remove('show');
