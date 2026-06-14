@@ -64,12 +64,17 @@
                 {% endfor %}
             </ul>
             <div style="margin-top: 18px;">
-                <a href="{{ url_for('promotion.list_posts') }}" style="color: #00d4ff; text-decoration: none;">전체 홍보게시판 보기</a>
+                <a href="{{ url_for('promotion.list_posts') }}" style="color: #00d4ff; text-decoration: none;">전체 홍보게시판
+                    보기</a>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- DB의 동아리 이름을 JS에 주입: _navbar.html의 url_for('board.anterclub', club_name=club.name)와 동일한 URL 생성에 사용 -->
+    <script>
+        const bannerClubNames = {{ navbar_clubs | map(attribute = 'name') | list | tojson }};
+    </script>
     <script src="/static/mainPage_/main.js"></script>
 </body>
 

@@ -104,17 +104,10 @@ const bannerImages = [
     '/static/mainPage_/banner_image/TUX.png',
 ];
 
-// 이미지 배열과 순서를 맞춰서 작성하세요
-const bannerURLs = [
-    '/board/cuvic',       // CUVIC 배너 클릭 시 이동할 URL
-    '/board/emsys',       // EMSYS 배너 클릭 시 이동할 URL
-    '/board/gdev',        // G.DEV.FC 배너 클릭 시 이동할 URL
-    '/board/nestnet',     // NEST.NET 배너 클릭 시 이동할 URL
-    '/board/nova',        // NOVA 배너 클릭 시 이동할 URL
-    '/board/pda',         // PDA 배너 클릭 시 이동할 URL
-    '/board/sammaru',     // SAMMaru 배너 클릭 시 이동할 URL
-    '/board/tux',         // TUX 배너 클릭 시 이동할 URL
-];
+// _navbar.html의 url_for('board.anterclub', club_name=club.name)와 동일한 URL을 생성합니다.
+// bannerClubNames는 main.html Jinja2 블록에서 DB의 navbar_clubs 데이터로 주입됩니다.
+// bannerImages 배열 순서(알파벳순)와 DB의 동아리 이름 순서(알파벳순)가 일치합니다.
+const bannerURLs = bannerClubNames.map(name => `/board/anterclub/${encodeURIComponent(name)}`);
 
 const textureLoader = new THREE.TextureLoader();
 
